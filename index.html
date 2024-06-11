@@ -7,12 +7,18 @@
 
         <link rel="stylesheet" href="boot/loading_screen.css" />
 
+        <script src="boot/loading_screen.js"></script>
+        <script src="lib/utils.js"></script>
+        <script src="boot/main.js"></script>
+
         <style>
             html, body {
                 background-color: black;
                 color: white;
                 position: relative;
                 height: 100vh;
+                margin: 0;
+                padding: 0;
             }
 
             html body div {
@@ -21,14 +27,31 @@
                 width: 100%;
             }
         </style>
+
+        <script>
+            window.addEventListener('contextmenu', e => {
+                e.preventDefault();
+            });
+
+            document.onreadystatechange = function() {
+                if (document.readyState === 'complete') {
+                    boot();
+                }
+            }
+        </script>
     </head>
 
     <body>
         <div id="loading_screen">
-
+            <div class="wrapper">
+                <img id="splash" src="boot/splash.png" />
+                <span id="spinner">
+                    &#xE05E
+                </span>
+            </div>
         </div>
 
-        <div id="desktop">
+        <div id="desktop" style="display: none;">
 
         </div>
     </body>
