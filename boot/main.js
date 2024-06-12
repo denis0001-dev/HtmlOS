@@ -8,4 +8,6 @@ async function boot() {
     await delay(1000);
 
     loading_screen.stop();
+
+    desktop(document.getElementById("main"));
 }

@@ -1,0 +1,106 @@
+#main {
+    visibility: hidden;
+    display: flex;
+    flex-direction: column-reverse;
+    flex-flow: column-reverse;
+    position: relative;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    #taskbar {
+        position: absolute;
+        bottom: 0;
+        z-index: 100;
+        height: 40px;
+        width: 100%;
+        border-top: 1px solid rgb(29, 29, 29);
+        background-color: #101010;
+        flex: 0 1 40px;
+
+        .left {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+
+            #start {
+                background-image: url('start.png');
+                background-size: cover;
+                height: inherit;
+                width: 48px;
+                transition: background-image 0.1s ease-in-out;
+            }
+
+            #start:hover {
+                background-image: url('start_hover.png');
+            }
+        }
+
+        .right {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+        }
+    }
+
+    #desktop {
+        flex: 1 1 auto;
+        position: relative;
+
+        #wallpaper {
+            z-index: 0;
+            position: absolute;
+            background-color: black;
+            background-image: none;
+            background-size: 100% 100%;
+            height: 100vh;
+            width: 100%;
+        }
+
+        #icons {
+            z-index: 1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: calc(100% - 40px);
+            width: 100%;
+            display: grid;
+            grid-auto-columns: 100px;
+            grid-auto-rows: 100px;
+            gap: 5px;
+
+            .icon {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                .icon_img {
+                    background-image: none;
+                    background-size: cover;
+                    height: 50px;
+                    width: 50px;
+                    margin: 10px;
+                }
+
+                .icon_img[data-type="trash_empty"] {
+                    background-image: url('../trash_empty.ico');
+                }
+
+                .icon_img[data-type="trash_full"] {
+                    background-image: url('../trash_full.ico');
+                }
+
+
+                .icon_text {
+                    color: white;
+                }
+            }
+
+            .icon:hover {
+                background-color: rgba(12, 114, 231, 0.397);
+                outline: 2px solid rgba(6, 100, 240, 0.651);
+                outline-offset: -2px;
+            }
+        }
+    }
+}
