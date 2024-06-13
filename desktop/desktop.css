@@ -79,7 +79,7 @@
                 align-items: center;
 
                 .icon_img {
-                    background-image: none;
+                    background-image: url('../icons/file.ico');
                     background-size: cover;
                     height: 50px;
                     width: 50px;
@@ -92,10 +92,6 @@
 
                 .icon_img[data-type="trash_full"] {
                     background-image: url('../icons/trash_full.ico');
-                }
-
-                .icon_img {
-                    background-image: url('../icons/file.ico');
                 }
 
                 .icon_img[data-type="none"] {

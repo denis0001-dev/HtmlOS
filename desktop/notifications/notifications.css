@@ -58,7 +58,7 @@
     }
 
     .body {
-        color: rgb(49, 49, 49);
+        color: rgb(66, 66, 66);
 
         strong {
             color: white;
@@ -95,12 +95,35 @@
     animation-fill-mode: forwards;
 }
 
+#main > #notification.disappear {
+    animation: disappear_from_right 0.5s;
+    animation-fill-mode: forwards;
+}
+
 @keyframes appear_from_right {
     0% {
         transform: translateX(0);
     }
 
+    80% {
+        transform: translateX(-430px);
+    }
+
     100% {
         transform: translateX(-450px);
+    }
+}
+
+@keyframes disappear_from_right {
+    0% {
+        transform: translateX(-450px);
+    }
+
+    80% {
+        transform: translateX(-20px);
+    }
+
+    100% {
+        transform: translateX(0);
     }
 }
