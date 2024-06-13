@@ -1,4 +1,5 @@
 async function boot() {
+    // Loading screen
     const loading_screen = new LoadingScreen(document.getElementById("loading_screen"));
     loading_screen.start();
     await delay(5000);
@@ -8,14 +9,12 @@ async function boot() {
 
     loading_screen.stop();
 
-    // desktop(document.getElementById("main"));
-
+    // Generate desktop
     const desktop = new Desktop(document.getElementById("main"));
-
-
 
     desktop.placeIcon(createIcon("Trash", "trash_empty"), 0, 0)
 
-    const window = new DesktopWindow("test", 600, 800, true, true, true);
+    // Test window
+    const window = new DesktopWindow("test", 500, 300, true, true, true);
     window.show();
 }

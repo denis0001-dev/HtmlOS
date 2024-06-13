@@ -4,11 +4,13 @@ class DesktopWindow {
     #height;
     title;
 
-    // Window position
-    x;
-    y;
-    newX;
-    newY;
+    // Window maximizing & restoring
+    #prevWidth;
+    #prevHeight;
+    #prevTop;
+    #prevLeft;
+
+    #maximized = false;
     
     constructor(title, initialWidth, initialHeight, closeButton, maximizeButton, minimizeButton) {
         this.title = title;
@@ -22,7 +24,19 @@ class DesktopWindow {
         this.element.style.width = this.#width + "px";
         this.element.style.height = this.#height + "px";
 
+
+
         this.element.innerHTML = `
+            <div class="resizer_up"></div>
+            <div class="resizer_right"></div>
+            <div class="resizer_left"></div>
+            <div class="resizer_bottom"></div>
+
+            <div class="resizer_up_left"></div>
+            <div class="resizer_up_right"></div>
+            <div class="resizer_bottom_left"></div>
+            <div class="resizer_bottom_right"></div>
+
             <div class="frame">
                 <div class="left">
                     <div class="icon"></div>
@@ -30,6 +44,7 @@ class DesktopWindow {
                 </div>
                 <div class="right">
                     <div class="minimize"></div>
+                    <div class="restore"></div>
                     <div class="maximize"></div>
                     <div class="close"></div>
                 </div>
@@ -38,12 +53,33 @@ class DesktopWindow {
 
             </div>
         `
-        this.element.querySelector('.close').addEventListener('click', () => {
+
+        // Hide buttons that don't need to be shown
+        if (!closeButton) this.closeButton.style.display = 'none';
+        if (!maximizeButton) this.maximizeButton.style.display = 'none';
+        if (!minimizeButton) this.minimizeButton.style.display = 'none';
+
+        // Button actions
+        this.closeButton.addEventListener('click', () => {
             this.close();
+        })
+
+        this.maximizeButton.addEventListener('click', () => {
+            this.toggleMaximize();
+        })
+
+        this.minimizeButton.addEventListener('click', () => {
+            // Not implemented yet
         })
 
         this.hide();
 
+        // Center the window
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+
+        this.element.style.top = `${(screenHeight - this.#height) / 2}px`
+        this.element.style.left = `${(screenWidth - this.#width) / 2}px`
 
         // Draggable window
         this.#draggableWindow();
@@ -79,11 +115,18 @@ class DesktopWindow {
         this.#height = Number(this.element.style.height.replace("px",""));
     }
 
-    show() {
-        this.element.style.display = "block";
+    async show() {
+        this.element.classList.add("opening");
+        this.element.style.display = "flex";
+        await delay(250);
+        this.element.classList.remove("opening");
     }
 
-    hide() {
+    async hide() {
+        // TODO make this work
+        /* this.element.classList.add("closing");
+        await delay(250);
+        this.element.classList.remove("closing"); */
         this.element.style.display = "none";
     }
 
@@ -104,6 +147,88 @@ class DesktopWindow {
         }, 250);
     }
 
+    async maximize() {
+        if (this.#maximized) {
+            return;
+        }
+
+        this.#prevWidth = this.#width;
+        this.#prevHeight = this.#height;
+
+        this.#prevTop = this.element.style.top;
+        this.#prevLeft = this.element.style.left;
+
+        this.element.style.transition = "all 0.25s ease-in-out";
+
+        this.element.style.width = "100%";
+        this.element.style.height = "calc(100vh - 40px)";
+        this.element.style.top = "0";
+        this.element.style.left = "0";
+
+        await delay(250)
+        this.element.style.transition = "";
+
+        this.maximizeButton.style.display = "none";
+        this.restoreButton.style.display = "block";
+        this.#updateBounds();
+
+        this.#maximized = true;
+    }
+
+    async restore() {
+        if (!this.#maximized) {
+            return;
+        }
+
+        this.#height = this.#prevHeight;
+        this.#width = this.#prevWidth;
+
+        this.element.style.transition = "all 0.25s ease-in-out";
+    
+        this.element.style.width = this.#width + "px";
+        this.element.style.height = this.#height + "px";
+        this.element.style.top = this.#prevTop;
+        this.element.style.left = this.#prevLeft;
+
+        await delay(250);
+        this.element.style.transition = "";
+
+        this.#prevHeight = undefined;
+        this.#prevWidth = undefined;
+        this.#prevTop = undefined;
+        this.#prevLeft = undefined;
+
+        this.maximizeButton.style.display = "block";
+        this.restoreButton.style.display = "none";
+        this.#updateBounds();
+
+        this.#maximized = false;
+    }
+
+    toggleMaximize() {
+        if (this.#maximized) {
+            this.restore();
+        } else {
+            this.maximize();
+        }
+    }
+
+    get minimizeButton() {
+        return this.element.querySelector(".frame > .right > .minimize");
+    }
+
+    get maximizeButton() {
+        return this.element.querySelector(".frame > .right > .maximize");
+    }
+
+    get restoreButton() {
+        return this.element.querySelector(".frame > .right > .restore");
+    }
+
+    get closeButton() {
+        return this.element.querySelector(".frame > .right > .close");
+    }
+
     #draggableWindow() {
         var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
         
@@ -116,6 +241,7 @@ class DesktopWindow {
         });
 
         function dragMouseDown(e) {
+            obj.restore();
             frame.style.cursor = "move";
             e = e || window.event;
             e.preventDefault();
