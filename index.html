@@ -7,14 +7,20 @@
 
         <title>Html OS</title>
 
+        <link rel="icon" type="image/png" href="favicon.png" />
+
         <link rel="stylesheet" href="boot/loading_screen.css" />
         <link rel="stylesheet" href="desktop/desktop.css" />
         <link rel="stylesheet" href="font/stylesheet.css" />
+        <link rel="stylesheet" href="desktop/windows/windows.css" />
+        <link rel="stylesheet" href="desktop/notifications/notifications.css" />
 
         <script src="boot/loading_screen.js"></script>
         <script src="lib/utils.js"></script>
         <script src="boot/main.js"></script>
         <script src="desktop/desktop.js"></script>
+        <script src="desktop/windows/windows.js"></script>
+        <script src="desktop/notifications/notifications.js"></script>
 
         <style>
             html, body {
@@ -24,12 +30,18 @@
                 height: 100vh;
                 margin: 0;
                 padding: 0;
+                overflow: hidden;
+                user-select: none;
             }
 
             html > body > div {
                 position: absolute;
                 height: 100%;
                 width: 100%;
+            }
+
+            .hidden {
+                visibility: hidden;
             }
         </style>
 
@@ -75,10 +87,33 @@
             <div id="desktop">
                 <div id="wallpaper"></div>
                 <div id="icons">
+                    <!--
                     <div class="icon" data-type="trash_full">
                         <div class="icon_img" data-type="trash_full"></div>
                         <div class="icon_name">Trash</div>
                     </div>
+                    -->
+                </div>
+            </div>
+
+            <div id="windows"></div>
+
+            <div id="notification">
+                <div class="head">
+                    <div class="left">
+                        <div class="icon"></div>
+                        <div class="title">Random Notification</div>
+                    </div>
+                    <div class="right">
+                        <div class="close"></div>
+                    </div>
+                </div>
+                <p class="body">
+                    Test
+                </p>
+                <div class="actions">
+                    <button class="action">Test</button>
+                    <button class="action">Test 2</button>
                 </div>
             </div>
         </div>

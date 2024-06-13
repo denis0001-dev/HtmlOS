@@ -13,7 +13,8 @@
         height: 40px;
         width: 100%;
         border-top: 1px solid rgb(29, 29, 29);
-        background-color: #101010;
+        background-color: rgba(16, 16, 16, 0.747);
+        backdrop-filter: blur(50px);
         flex: 0 1 40px;
 
         .left {
@@ -27,11 +28,11 @@
                 background-size: cover;
                 height: inherit;
                 width: 48px;
-                transition: background-image 0.1s ease-in-out;
+                transition: background-color 0.1s ease-in-out;
             }
 
             #start:hover {
-                background-image: url('start_hover.png');
+                background-color: #3d3d3d;
             }
         }
 
@@ -65,8 +66,11 @@
             height: calc(100% - 40px);
             width: 100%;
             display: grid;
-            grid-auto-columns: 100px;
-            grid-auto-rows: 100px;
+            /* grid-auto-columns: 100px;
+            grid-auto-rows: 100px; */
+            grid-template-columns: repeat(auto-fill, 100px);
+            grid-template-rows: repeat(auto-fill, 100px);
+            grid-auto-flow: column;
             gap: 5px;
 
             .icon {
@@ -83,17 +87,29 @@
                 }
 
                 .icon_img[data-type="trash_empty"] {
-                    background-image: url('../trash_empty.ico');
+                    background-image: url('../icons/trash_empty.ico');
                 }
 
                 .icon_img[data-type="trash_full"] {
-                    background-image: url('../trash_full.ico');
+                    background-image: url('../icons/trash_full.ico');
                 }
 
+                .icon_img {
+                    background-image: url('../icons/file.ico');
+                }
+
+                .icon_img[data-type="none"] {
+                    background-image: none;
+                    visibility: hidden;
+                }
 
                 .icon_text {
                     color: white;
                 }
+            }
+
+            .icon[data-type="none"] {
+                visibility: hidden;
             }
 
             .icon:hover {
