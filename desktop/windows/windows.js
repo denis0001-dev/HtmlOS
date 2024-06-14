@@ -84,6 +84,9 @@ class DesktopWindow {
         // Draggable window
         this.#draggableWindow();
 
+        // Resizers
+        this.#resizer_up();
+
         document.getElementById("windows").appendChild(this.element);
     }
 
@@ -272,6 +275,93 @@ class DesktopWindow {
             document.onmouseup = null;
             document.onmousemove = null;
             frame.style.cursor = "default";
+        }
+    }
+
+    // Getters for resizers
+    get resizer_up() {
+        return this.element.querySelector(".resizer_up");
+    }
+
+    get resizer_right() {
+        return this.element.querySelector(".resizer_right");
+    }
+
+    get resizer_left() {
+        return this.element.querySelector(".resizer_left");
+    }
+
+    get resizer_bottom() {
+        return this.element.querySelector(".resizer_bottom");
+    }
+
+    get resizer_up_left() {
+        return this.element.querySelector(".resizer_up_left");
+    }
+
+    get resizer_up_right() {
+        return this.element.querySelector(".resizer_up_right");
+    }
+
+    get resizer_bottom_left() {
+        return this.element.querySelector(".resizer_bottom_left");
+    }
+
+    get resizer_bottom_right() {
+        return this.element.querySelector(".resizer_bottom_right");
+    }
+
+    // Resizers
+    #resizer_up() {
+        var pos1, pos2, pos3, pos4 = 0;
+
+        const obj = this;
+
+        obj.resizer_up.addEventListener("mousedown", (e) => {
+            dragMouseDown(e);
+        });
+
+
+        function dragMouseDown(e) {
+            obj.restore();
+            e = e || window.event;
+            e.preventDefault();
+        
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
+        
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+
+            const prevTop = obj.element.style.top.replace("px", "");
+        
+            // Update the top and height positions of the element based on the mouse movement
+            obj.element.style.top = (obj.element.offsetTop - pos2) + "px";
+
+            const val = Number(prevTop - obj.element.style.top.replace("px", ""));
+            obj.element.style.height = (obj.element.clientHeight + val) + "px";
+            
+            console.log(obj.element.clientHeight + val == obj.element.style.height.replace("px", ""));
+            console.log(obj.element.clientHeight + val)
+            console.log(obj.element.style.height)
+        }
+
+        function closeDragElement() {
+            /* stop moving when mouse button is released:*/
+            document.onmouseup = null;
+            document.onmousemove = null;
         }
     }
 }
