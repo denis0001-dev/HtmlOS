@@ -1,3 +1,84 @@
+const windows = new Map();
+const tasks = new Map();
+
+function getWindow(taskID) {
+    if (taskID instanceof String) {
+        return windows.get(taskID);
+    } else if (taskID instanceof HTMLElement) {
+        return windows.get(taskID.id.replace("window_", ""));
+    } else {
+        return null;
+    }
+}
+
+
+function getTask(taskID) {
+    if (taskID instanceof String || typeof taskID == "string") {
+        return tasks.get(taskID);
+    } else if (taskID instanceof HTMLElement) {
+        return tasks.get(taskID.id.replace("task-", ""));
+    } else {
+        return null;
+    }
+}
+
+class Task {
+    #window;
+    #taskbarIcon;
+
+    #func;
+
+    #taskID;
+
+    constructor(window, taskbarIcon, func) {
+        this.#func = func;
+        this.#window = window;
+        this.#taskbarIcon = taskbarIcon;
+
+        this.#taskID = generateRandomString(8);
+
+        tasks.set(this.#taskID, this);
+
+        this.execute();
+    }
+
+    get window() {
+        return this.#window;
+    }
+
+    set window(window) {
+        this.#window = window;
+    }
+
+    get taskbarIcon() {
+        return this.#taskbarIcon;
+    }
+
+    set taskbarIcon(taskbarIcon) {
+        this.#taskbarIcon = taskbarIcon;
+    }
+
+    get func() {
+        return this.#func;
+    }
+
+    set func(_func) {
+        throw new Error("Function is final");
+    }
+
+    get taskID() {
+        return this.#taskID;
+    }
+
+    async execute() {
+        this.func();
+    }
+
+    finish() {
+        tasks.delete(this.#taskID);
+    }
+}
+
 class DesktopWindow {
     element;
     #width;
@@ -12,7 +93,7 @@ class DesktopWindow {
 
     #maximized = false;
     
-    constructor(title, initialWidth, initialHeight, closeButton, maximizeButton, minimizeButton) {
+    constructor(title, initialWidth, initialHeight, closeButton, maximizeButton, minimizeButton, icon) {
         this.title = title;
 
         this.#width = initialWidth;
@@ -24,7 +105,34 @@ class DesktopWindow {
         this.element.style.width = this.#width + "px";
         this.element.style.height = this.#height + "px";
 
+        // Fallback icon
+        if ([undefined, null, ""].includes(icon)) {
+            icon = "application";
+        }
 
+        // Create an icon on the taskbar for the window
+        const task = new Task(this, null, () => {});
+        
+        this.element.id = "window_" + task.taskID;
+
+        const taskIcon = document.createElement("div");
+        taskIcon.classList.add("task");
+        taskIcon.id = "task-" + task.taskID;
+
+        taskIcon.innerHTML = `
+        <div class="icon_img" data-type="${icon}"></div>
+        <div class="underline"></div>
+        `
+
+        taskIcon.addEventListener('click', () => {
+            this.maximize();
+        });
+
+        task.taskbarIcon = taskIcon;
+
+        taskIcon.style.display = 'none';
+
+        document.getElementById("tasks").appendChild(taskIcon);
 
         this.element.innerHTML = `
             <div class="resizer_up"></div>
@@ -39,7 +147,7 @@ class DesktopWindow {
 
             <div class="frame">
                 <div class="left">
-                    <div class="icon"></div>
+                    <div class="icon_img" data-type="${icon}"></div>
                     <div class="title">${this.title}</div>
                 </div>
                 <div class="right">
@@ -69,10 +177,10 @@ class DesktopWindow {
         })
 
         this.minimizeButton.addEventListener('click', () => {
-            // Not implemented yet
+            this.minimize();
         })
 
-        this.hide();
+        this.element.style.display = 'none';
 
         // Center the window
         const screenWidth = window.innerWidth;
@@ -86,8 +194,17 @@ class DesktopWindow {
 
         // Resizers
         this.#resizer_up();
+        this.#resizer_right();
+        this.#resizer_bottom();
+        this.#resizer_bottom_right();
+        this.#resizer_left();
+        this.#resizer_bottom_left();
+        this.#resizer_top_left();
+        this.#resizer_top_right();
 
         document.getElementById("windows").appendChild(this.element);
+
+        windows.set(this.taskID, this);
     }
 
     get element() {
@@ -110,27 +227,44 @@ class DesktopWindow {
 
     set title(title) {
         this.title = title;
-        this.element.querySelector(".title").innerHTML = title;
+        this.element.querySelector(".frame > .left > .title").innerHTML = title;
+    }
+
+    get icon() {
+        return this.element.querySelector(".frame > .left > .icon_img").dataset.type;
+    }
+
+    set icon(icon) {
+        this.element.querySelector(".frame > .left > .icon_img").dataset.type = icon;
+    }
+
+    get taskbarIcon() {
+        return getTask(this.taskID).taskbarIcon;
     }
 
     #updateBounds() {
-        this.#width = Number(this.element.style.width.replace("px", ""));
-        this.#height = Number(this.element.style.height.replace("px",""));
+        this.#width = Number(window.getComputedStyle(this.element).width.replace("px", ""));
+        this.#height = Number(window.getComputedStyle(this.element).height.replace("px",""));
     }
 
     async show() {
         this.element.classList.add("opening");
+        this.taskbarIcon.classList.add("appear");
+        this.taskbarIcon.style.display = "flex";
         this.element.style.display = "flex";
         await delay(250);
         this.element.classList.remove("opening");
+        this.taskbarIcon.classList.remove("appear");
     }
 
     async hide() {
-        // TODO make this work
-        /* this.element.classList.add("closing");
+        this.element.classList.add("closing");
+        this.taskbarIcon.classList.add("disappear");
         await delay(250);
-        this.element.classList.remove("closing"); */
         this.element.style.display = "none";
+        this.taskbarIcon.style.display = "none";
+        this.element.classList.remove("closing");
+        this.taskbarIcon.classList.remove("disappear");
     }
 
     set height(height) {
@@ -145,12 +279,17 @@ class DesktopWindow {
 
     close() {
         this.element.classList.add("closing");
+        this.taskbarIcon.classList.add("disappear");
         setTimeout(() => {
             this.element.remove();
+            this.taskbarIcon.remove();
+            windows.delete(this.taskID);
+            getTask(this.taskID).finish();
         }, 250);
     }
 
     async maximize() {
+        this.#updateBounds();
         if (this.#maximized) {
             return;
         }
@@ -179,6 +318,7 @@ class DesktopWindow {
     }
 
     async restore() {
+        this.#updateBounds();
         if (!this.#maximized) {
             return;
         }
@@ -216,6 +356,20 @@ class DesktopWindow {
         }
     }
 
+    async minimize() {
+        
+    }
+
+    // Task ID
+    get taskID() {
+        return this.element.id.replace("window_", "");
+    }
+
+    set taskID(_taskID) {
+        throw new Error("Task ID is final, cannot be changed");
+    }
+
+    // Getters for window buttons
     get minimizeButton() {
         return this.element.querySelector(".frame > .right > .minimize");
     }
@@ -232,6 +386,7 @@ class DesktopWindow {
         return this.element.querySelector(".frame > .right > .close");
     }
 
+    // Make the window draggable
     #draggableWindow() {
         var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
         
@@ -245,7 +400,7 @@ class DesktopWindow {
 
         function dragMouseDown(e) {
             obj.restore();
-            frame.style.cursor = "move";
+            frame.style.cursor = "var(--cur-move)";
             e = e || window.event;
             e.preventDefault();
 
@@ -274,7 +429,7 @@ class DesktopWindow {
             /* stop moving when mouse button is released:*/
             document.onmouseup = null;
             document.onmousemove = null;
-            frame.style.cursor = "default";
+            frame.style.cursor = "var(--cur-default)";
         }
     }
 
@@ -323,7 +478,6 @@ class DesktopWindow {
 
 
         function dragMouseDown(e) {
-            obj.restore();
             e = e || window.event;
             e.preventDefault();
         
@@ -352,16 +506,267 @@ class DesktopWindow {
 
             const val = Number(prevTop - obj.element.style.top.replace("px", ""));
             obj.element.style.height = (obj.element.clientHeight + val) + "px";
-            
-            console.log(obj.element.clientHeight + val == obj.element.style.height.replace("px", ""));
-            console.log(obj.element.clientHeight + val)
-            console.log(obj.element.style.height)
         }
+    }
 
-        function closeDragElement() {
-            /* stop moving when mouse button is released:*/
-            document.onmouseup = null;
-            document.onmousemove = null;
+    #resizer_right() {
+        var pos1, pos2, pos3, pos4 = 0;
+
+        const obj = this;
+
+        obj.resizer_right.addEventListener("mousedown", (e) => {
+            dragMouseDown(e);
+        });
+
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
+        
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+
+            obj.element.style.width = (obj.element.offsetWidth - pos1) + "px";
+        }
+    }
+
+    #resizer_bottom() {
+        var pos1, pos2, pos3, pos4 = 0;
+
+        const obj = this;
+
+        obj.resizer_bottom.addEventListener("mousedown", (e) => {
+            dragMouseDown(e);
+        });
+
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
+        
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+
+            obj.element.style.height = (obj.element.offsetHeight - pos2) + "px";
+        }
+    }
+
+    #resizer_bottom_right() {
+        var pos1, pos2, pos3, pos4 = 0;
+
+        const obj = this;
+
+        obj.resizer_bottom_right.addEventListener("mousedown", (e) => {
+            dragMouseDown(e);
+        });
+
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
+        
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+
+            obj.element.style.height = (obj.element.offsetHeight - pos2) + "px";
+            obj.element.style.width = (obj.element.offsetWidth - pos1) + "px";
+        }
+    }
+
+    #resizer_left() {
+        var pos1, pos2, pos3, pos4 = 0;
+
+        const obj = this;
+
+        obj.resizer_left.addEventListener("mousedown", (e) => {
+            dragMouseDown(e);
+        });
+
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
+        
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+
+            obj.element.style.left = (obj.element.offsetLeft - pos1) + "px";
+            obj.element.style.width = (obj.element.offsetWidth + pos1) + "px";
+        }
+    }
+
+    #resizer_bottom_left() {
+        var pos1, pos2, pos3, pos4 = 0;
+
+        const obj = this;
+
+        obj.resizer_bottom_left.addEventListener("mousedown", (e) => {
+            dragMouseDown(e);
+        });
+
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
+        
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+
+            obj.element.style.left = (obj.element.offsetLeft - pos1) + "px";
+            obj.element.style.width = (obj.element.offsetWidth + pos1) + "px";
+            obj.element.style.height = (obj.element.offsetHeight - pos2) + "px";
+        }
+    }
+
+    #resizer_top_left() {
+        var pos1, pos2, pos3, pos4 = 0;
+
+        const obj = this;
+
+        obj.resizer_up_left.addEventListener("mousedown", (e) => {
+            dragMouseDown(e);
+        });
+
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
+        
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+
+            obj.element.style.height = (obj.element.offsetHeight + pos2) + "px";
+            obj.element.style.top = (obj.element.offsetTop - pos2) + "px";
+            obj.element.style.left = (obj.element.offsetLeft - pos1) + "px";
+            obj.element.style.width = (obj.element.offsetWidth + pos1) + "px";
+        }
+    }
+
+    #resizer_top_right() {
+        var pos1, pos2, pos3, pos4 = 0;
+
+        const obj = this;
+
+        obj.resizer_up_right.addEventListener("mousedown", (e) => {
+            dragMouseDown(e);
+        });
+
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
+        
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+
+            obj.element.style.height = (obj.element.offsetHeight + pos2) + "px";
+            obj.element.style.top = (obj.element.offsetTop - pos2) + "px";
+            obj.element.style.width = (obj.element.offsetWidth - pos1) + "px";
         }
     }
 }

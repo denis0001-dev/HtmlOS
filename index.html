@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="font/stylesheet.css" />
         <link rel="stylesheet" href="desktop/windows/windows.css" />
         <link rel="stylesheet" href="desktop/notifications/notifications.css" />
+        <link rel="stylesheet" href="cursors/cursors.css" />
 
         <script src="boot/loading_screen.js"></script>
         <script src="lib/utils.js"></script>
@@ -45,6 +46,9 @@
             }
         </style>
 
+        <!-- Animation cache -->
+        <style id="animation_cache"></style>
+
         <script>
             window.addEventListener('contextmenu', e => {
                 e.preventDefault();
@@ -73,7 +77,9 @@
                 <div class="left">
                     <div id="start"></div>
                     <div id="search"></div>
-                    <div id="tasks"></div>
+                    <div id="tasks">
+
+                    </div>
                     <div id="applications"></div>
                 </div>
 
