@@ -1,26 +1,28 @@
 :root {
-    --cur-default: url('aero_arrow.png'), default;
-    --cur-move: url('aero_move.png'), move;
+    --cur-center: 16 16;
+
+    --cur-default: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_arrow.png'), default;
+    --cur-move: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_move.png') var(--cur-center), move;
 
     /* Up/down resize */
-    --cur-ns-resize: url('aero_ns.png'), ns-resize;
-    --cur-n-resize: var(--cur-ns-resize), n-resize;
-    --cur-s-resize: var(--cur-ns-resize), s-resize;
+    --cur-ns-resize: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_ns.png') var(--cur-center), ns-resize;
+    --cur-n-resize: var(--cur-ns-resize);
+    --cur-s-resize: var(--cur-ns-resize);
 
     /* Left/right resize */
-    --cur-ew-resize: url('aero_ew.png'), ew-resize;
-    --cur-e-resize: var(--cur-ew-resize), e-resize;
-    --cur-w-resize: var(--cur-ew-resize), w-resize;
+    --cur-ew-resize: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_ew.png') var(--cur-center), ew-resize;
+    --cur-e-resize: var(--cur-ew-resize);
+    --cur-w-resize: var(--cur-ew-resize);
 
     /* Top right - bottom left diagonal resize */
-    --cur-nesw-resize: url('aero_nesw.png'), nesw-resize;
+    --cur-nesw-resize: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_nesw.png') var(--cur-center), nesw-resize;
     
     /* Top left - bottom right diagonal resize */
-    --cur-nwse-resize: url('aero_nwse.png'), nwse-resize;
+    --cur-nwse-resize: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_nwse.png') var(--cur-center), nwse-resize;
 
-    --cur-unavail: url('aero_unavail.png'), not-allowed;
-    --cur-pointer: url('aero_link.png'), pointer;
-    --cur-help: url('aero_helpsel.png'), help;
+    --cur-unavail: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_unavail.png') var(--cur-center), not-allowed;
+    --cur-pointer: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_link.png') var(--cur-center), pointer;
+    --cur-help: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_helpsel.png'), help;
 }
 
 * {
