@@ -1,3 +1,25 @@
+.icon_img {
+    background-image: url('../icons/file.ico');
+    background-size: cover;
+}
+
+.icon_img[data-type="trash_empty"] {
+    background-image: url('../icons/trash_empty.ico');
+}
+
+.icon_img[data-type="trash_full"] {
+    background-image: url('../icons/trash_full.ico');
+}
+
+.icon_img[data-type="application"] {
+    background-image: url('../icons/application.ico');
+}
+
+.icon_img[data-type="none"] {
+    background-image: none;
+    visibility: hidden;
+}
+
 #main {
     visibility: hidden;
     display: flex;
@@ -22,6 +44,8 @@
             left: 0;
             top: 0;
             height: 100%;
+            display: flex;
+            flex-direction: row;
 
             #start {
                 background-image: url('start.png');
@@ -33,6 +57,53 @@
 
             #start:hover {
                 background-color: #3d3d3d;
+            }
+
+            #tasks {
+                display: flex;
+                flex-direction: row;
+                gap: 3px;
+                height: inherit;
+                width: auto;
+
+                .task {
+                    display: flex;
+                    flex-direction: column;
+                    width: 40px;
+                    height: 40px;
+                    position: relative;
+                    transition: background-color 0.25s ease-in-out;
+
+                    .icon_img {
+                        margin: 5px;
+                        width: calc(100% - 5px * 2);
+                        height: calc(100% - 3px - 5px * 2);
+                    }
+
+                    .underline {
+                        width: 100%;
+                        height: 3px;
+                        background-color: rgb(0, 136, 247);
+                    }
+
+                    .underline.inactive {
+                        background-color: rgb(104, 104, 104);
+                    }
+                }
+
+                .task.appear {
+                    animation: icon_appear 0.25s;
+                    animation-fill-mode: forwards;
+                }
+
+                .task.disappear {
+                    animation: icon_disappear 0.25s;
+                    animation-fill-mode: forwards;
+                }
+
+                .task:hover {
+                    background-color: rgba(80, 80, 80, 0.5);
+                }
             }
         }
 
@@ -79,24 +150,9 @@
                 align-items: center;
 
                 .icon_img {
-                    background-image: url('../icons/file.ico');
-                    background-size: cover;
                     height: 50px;
                     width: 50px;
                     margin: 10px;
-                }
-
-                .icon_img[data-type="trash_empty"] {
-                    background-image: url('../icons/trash_empty.ico');
-                }
-
-                .icon_img[data-type="trash_full"] {
-                    background-image: url('../icons/trash_full.ico');
-                }
-
-                .icon_img[data-type="none"] {
-                    background-image: none;
-                    visibility: hidden;
                 }
 
                 .icon_text {
@@ -114,5 +170,33 @@
                 outline-offset: -2px;
             }
         }
+    }
+}
+
+@keyframes icon_appear {
+    0% {
+        opacity: 0%;
+        transform: translateX(20px);
+        width: 1px;
+    }
+
+    100% {
+        opacity: 100%;
+        transform: translateX(0);
+        width: 40px;
+    }
+}
+
+@keyframes icon_disappear {
+    0% {
+        opacity: 100%;
+        transform: translateX(0);
+        width: 40px;
+    }
+
+    100% {
+        opacity: 0%;
+        transform: translateX(20px);
+        width: 1px;
     }
 }

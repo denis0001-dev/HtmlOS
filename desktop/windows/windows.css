@@ -10,6 +10,8 @@
         flex-direction: column;
         box-shadow: 5px 5px 5px 5px rgba(22, 22, 22, 0.404);
         transition: width, height 0.1s ease-in-out;
+        min-width: 150px;
+        min-height: 40px;
 
         /* Resizers (sides) */
         .resizer_up {
@@ -18,7 +20,7 @@
             left: 0;
             height: 5px;
             width: 100%;
-            cursor: n-resize;
+            cursor: var(--cur-n-resize);
         }
 
         .resizer_bottom {
@@ -27,7 +29,7 @@
             left: 0;
             height: 5px;
             width: 100%;
-            cursor: s-resize;
+            cursor: var(--cur-s-resize);
         }
 
         .resizer_left {
@@ -36,7 +38,7 @@
             left: -5px;
             height: 100%;
             width: 5px;
-            cursor: w-resize;
+            cursor: var(--cur-w-resize);
         }
 
         .resizer_right {
@@ -45,7 +47,7 @@
             right: -5px;
             height: 100%;
             width: 5px;
-            cursor: e-resize;
+            cursor: var(--cur-e-resize);
         }
 
         /* Resizers (corners) */
@@ -55,7 +57,7 @@
             left: -5px;
             height: 5px;
             width: 5px;
-            cursor: nw-resize;
+            cursor: var(--cur-nwse-resize);
         }
 
         .resizer_up_right {
@@ -64,7 +66,7 @@
             right: -5px;
             height: 5px;
             width: 5px;
-            cursor: ne-resize;
+            cursor: var(--cur-nesw-resize);
         }
 
         .resizer_bottom_left {
@@ -73,7 +75,7 @@
             left: -5px;
             height: 5px;
             width: 5px;
-            cursor: sw-resize;
+            cursor: var(--cur-nesw-resize);
         }
 
         .resizer_bottom_right {
@@ -82,7 +84,7 @@
             right: -5px;
             height: 5px;
             width: 5px;
-            cursor: se-resize;
+            cursor: var(--cur-nwse-resize);
         }
 
         /* Frame */
@@ -104,10 +106,8 @@
                 flex-direction: inherit;
 
                 /* Icon & title */
-                .icon {
-                    padding-left: 5px;
-                    background-image: none;
-                    background-size: cover !important;
+                .icon_img {
+                    margin-left: 5px;
                     height: 25px !important;
                     width: 25px !important;
                 }
@@ -194,6 +194,11 @@
         animation: open 0.25s;
         animation-fill-mode: forwards;
     }
+
+    /* > .window.minimizing {
+        animation: minimize 0.5s;
+        animation-fill-mode: forwards;
+    } */
 }
 
 @keyframes close {
@@ -219,3 +224,16 @@
         transform: scale(1);
     }
 }
+
+/* @keyframes minimize {
+    0% {
+        transform: scale(1);
+        opacity: 100%;
+    }
+
+    100% {
+        transform: scale(0.3);
+        opacity: 0%;
+        top: calc(100vh - 100px);
+    }
+} */

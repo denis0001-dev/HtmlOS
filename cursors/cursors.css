@@ -1,0 +1,28 @@
+:root {
+    --cur-default: url('aero_arrow.png'), default;
+    --cur-move: url('aero_move.png'), move;
+
+    /* Up/down resize */
+    --cur-ns-resize: url('aero_ns.png'), ns-resize;
+    --cur-n-resize: var(--cur-ns-resize), n-resize;
+    --cur-s-resize: var(--cur-ns-resize), s-resize;
+
+    /* Left/right resize */
+    --cur-ew-resize: url('aero_ew.png'), ew-resize;
+    --cur-e-resize: var(--cur-ew-resize), e-resize;
+    --cur-w-resize: var(--cur-ew-resize), w-resize;
+
+    /* Top right - bottom left diagonal resize */
+    --cur-nesw-resize: url('aero_nesw.png'), nesw-resize;
+    
+    /* Top left - bottom right diagonal resize */
+    --cur-nwse-resize: url('aero_nwse.png'), nwse-resize;
+
+    --cur-unavail: url('aero_unavail.png'), not-allowed;
+    --cur-pointer: url('aero_link.png'), pointer;
+    --cur-help: url('aero_helpsel.png'), help;
+}
+
+* {
+    cursor: var(--cur-default);
+}
