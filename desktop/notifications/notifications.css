@@ -6,8 +6,8 @@
     padding: 15px;
     width: 400px;
     height: auto;
-    background-color: rgba(16, 16, 16, 0.705);
-    backdrop-filter: blur(50px);
+    background-color: var(--uwp-ui-dark-color);
+    backdrop-filter: var(--uwp-ui-blur);
     z-index: 3;
 
     .head {

@@ -1,4 +1,5 @@
 var cookiesAccepted = false;
+var desktop;
 
 async function boot() {
     // Change all cursors to their custom value
@@ -34,6 +35,9 @@ async function boot() {
         styleSheetText.replace(c+"nwse-resize", "var(--cur-nwse-resize)");
     }
 
+    // Animation cache
+    init_cache();
+
     // Loading screen
     const loading_screen = new LoadingScreen(document.getElementById("loading_screen"));
     loading_screen.start();
@@ -45,7 +49,7 @@ async function boot() {
     loading_screen.stop();
 
     // Generate desktop
-    const desktop = new Desktop(document.getElementById("main"));
+    desktop = new Desktop(document.getElementById("main")); 
 
     desktop.placeIcon(createIcon("Trash", "trash_empty"), 0, 0)
 
@@ -57,6 +61,9 @@ async function boot() {
             new Action("Decline cookies", () => {cookiesAccepted = false; notification("error", "Cookie Manager", "Cookies rejected.", createActions())})
         ],  "warning"
     )
+
+    cookies_window.minHeight = 175;
+    cookies_window.minWidth = 325;
 
     if (!document.cookie.split(";").includes("cookiesAccepted=true")) {
         setTimeout(() => {cookies_window.show()}, 3000);
