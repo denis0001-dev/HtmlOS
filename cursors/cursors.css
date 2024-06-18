@@ -1,6 +1,7 @@
 :root {
     --cur-default: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_arrow.png'), default;
     --cur-move: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_move.png') 12 12, move;
+    --cur-busy: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy.gif') 16 16, wait;
 
     /* Up/down resize */
     --cur-ns-resize: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_ns.png') 5 12, ns-resize;
