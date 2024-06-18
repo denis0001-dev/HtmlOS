@@ -116,6 +116,7 @@
                     padding-left: 5px;
                     padding-right: 5px;
                     align-items: center;
+                    color: rgb(105, 105, 105);
                 }
             }
 
@@ -191,11 +192,13 @@
                 width: 64px;
                 height: 64px;
                 margin: 10px;
+                flex: 1 0 64px;
             }
 
             .message {
                 padding-left: 20px;
                 padding-right: 10px;
+                flex: 0 1 auto;
             }
 
             .actions {
@@ -205,6 +208,9 @@
                 margin: 5px;
                 gap: 5px;
                 background-color: inherit;
+                display: flex;
+                align-items: center;
+                flex-direction: row;
 
                 button.action {
                     height: 25px;
@@ -228,6 +234,10 @@
                 }
             }
         }
+    }
+
+    .window:last-child > .frame .title {
+        color: black;
     }
 
     /* Close & open animations */

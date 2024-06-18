@@ -43,6 +43,13 @@ class Desktop {
             this.createBlankIcons();
         })
 
+        this.element.querySelector("#taskbar > .left > #start").addEventListener("click", () => {
+            this.toggle_startmenu();
+        })
+        this.#startmenu_drag_top();
+        this.#startmenu_drag_top_right();
+        this.#startmenu_drag_right();
+
         this.wallpaper_path = "desktop/wallpaper.png";
 
         this.createBlankIcons();
@@ -142,7 +149,159 @@ class Desktop {
         }
     }
 
-    
+    get start_menu() {
+        return this.element.querySelector("#start_menu");
+    }
+
+    minimize_startmenu() {
+        if (this.start_menu.style.transform = "") return;
+        const height = this.start_menu.clientHeight + 45;
+
+        this.start_menu.style.transform = `translateY(${height}px)`
+    }
+
+    async maximize_startmenu() {
+        stylesheet.replaceChildren(
+            `@keyframes startmenu {
+                0% {
+                    transform: translateY(${this.element.clientHeight + 5}px);
+                }
+
+                80% {
+                    transform: translateY(50px);
+                }
+
+                100% {
+                    transform: translateY(0px);
+                }
+            }
+            `
+        )
+
+        this.start_menu.style.animation = "startmenu 0.5s";
+        this.start_menu.style.animationFillMode = "forwards";
+
+        await delay(500);
+        this.start_menu.style.animation = "";
+        this.start_menu.style.transform = "translateY(0px)";
+    }
+
+    async toggle_startmenu() {
+        if (this.start_menu.style.transform == "translateY(0px)") {
+            this.minimize_startmenu();
+        } else {
+            this.maximize_startmenu();
+        }
+    }
+
+    #startmenu_drag_top() {
+        var pos1, pos2, pos3, pos4 = 0;
+
+        const obj = this;
+
+        obj.start_menu.querySelector('.resizer_up').addEventListener("mousedown", (e) => {
+            dragMouseDown(e);
+        });
+
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
+        
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+
+            obj.start_menu.style.height = (obj.start_menu.clientHeight + pos2) + "px";
+        }
+    }
+
+    #startmenu_drag_top_right() {
+        var pos1, pos2, pos3, pos4 = 0;
+
+        const obj = this;
+
+        obj.start_menu.querySelector('.resizer_up_right').addEventListener("mousedown", (e) => {
+            dragMouseDown(e);
+        });
+
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
+        
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+
+            obj.start_menu.style.height = (obj.start_menu.clientHeight + pos2) + "px";
+            obj.start_menu.style.width = (obj.start_menu.clientWidth - pos1) + "px";
+        }
+    }
+
+    #startmenu_drag_right() {
+        var pos1, pos2, pos3, pos4 = 0;
+
+        const obj = this;
+
+        obj.start_menu.querySelector('.resizer_right').addEventListener("mousedown", (e) => {
+            dragMouseDown(e);
+        });
+
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
+        
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+        
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+
+            obj.start_menu.style.width = (obj.start_menu.clientWidth - pos1) + "px";
+        }
+    }
 }
 
 function createIcon(name, type) {

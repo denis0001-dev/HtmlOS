@@ -224,6 +224,11 @@ class DesktopWindow {
         this.#resizer_top_left();
         this.#resizer_top_right();
 
+        // Focus
+        this.element.addEventListener('click', () => {
+            this.focus();
+        })
+
         document.getElementById("windows").appendChild(this.element);
 
         windows.set(this.taskID, this);
@@ -273,9 +278,30 @@ class DesktopWindow {
         this.element.appendChild(content);
     }
 
+    get minWidth() {
+        return Number(window.getComputedStyle(this.element).minWidth.replace("px", ""));
+    }
+
+    set minWidth(minWidth) {
+        this.element.style.minWidth = minWidth + "px";
+    }
+
+    get minHeight() {
+        return Number(window.getComputedStyle(this.element).minHeight.replace("px", ""));
+    }
+
+    set minHeight(minHeight) {
+        this.element.style.minHeight = minHeight + "px";
+    }
+
     #updateBounds() {
         this.#width = Number(window.getComputedStyle(this.element).width.replace("px", ""));
         this.#height = Number(window.getComputedStyle(this.element).height.replace("px",""));
+    }
+
+    focus() {
+        const windows = document.querySelector("#windows");
+        windows.appendChild(this.element);
     }
 
     async show() {
@@ -431,6 +457,7 @@ class DesktopWindow {
 
         function dragMouseDown(e) {
             obj.restore();
+            obj.focus();
             frame.style.cursor = "var(--cur-move)";
             e = e || window.event;
             e.preventDefault();
@@ -805,6 +832,9 @@ class DesktopWindow {
 class IconTextDialog extends DesktopWindow {
     constructor(title, width, height, _message, _actions, _icon) {
         super(title, width, height, true, false, false, _icon, null);
+
+        this.minHeight = 130;
+        this.minWidth = 315;
 
         const content = this.content;
         content.classList.add("icon_text_dialog");
