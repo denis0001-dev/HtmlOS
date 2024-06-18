@@ -89,14 +89,13 @@
 
         /* Frame */
         .frame {
-            position: absolute;
             border-bottom: 2px solid rgb(206, 206, 206);
             height: 37px;
             width: 100%;
 
             display: flex;
             align-items: center;
-            flex: 0 1 40px;
+            flex: 0 1 37px;
 
             .left {
                 position: absolute;
@@ -132,7 +131,7 @@
                     background-size: cover;
                     height: 36px;
                     width: 50px;
-                    transition: background-image 0.1 ease-in-out;
+                    transition: background-image 0.1s ease-in-out;
                 }
 
                 .minimize:hover {
@@ -144,7 +143,7 @@
                     background-size: cover;
                     height: 36px;
                     width: 50px;
-                    transition: background-image 0.1 ease-in-out;
+                    transition: background-image 0.1s ease-in-out;
                     display: none;
                 }
 
@@ -157,7 +156,7 @@
                     background-size: cover;
                     height: 36px;
                     width: 50px;
-                    transition: background-image 0.1 ease-in-out;
+                    transition: background-image 0.1s ease-in-out;
                 }
 
                 .maximize:hover {
@@ -169,7 +168,7 @@
                     background-size: cover;
                     height: 36px;
                     width: 50px;
-                    transition: background-image 0.1 ease-in-out;
+                    transition: background-image 0.1s ease-in-out;
                 }
 
                 .close:hover {
@@ -179,8 +178,55 @@
         }
 
         /* Content */
-        .content {
-            flex: 1 1 auto;
+        > .content {
+            flex: 1 0 auto;
+        }
+
+        > .content.icon_text_dialog {
+            display: flex;
+            align-items: center;
+            position: relative;
+
+            .icon_img {
+                width: 64px;
+                height: 64px;
+                margin: 10px;
+            }
+
+            .message {
+                padding-left: 20px;
+                padding-right: 10px;
+            }
+
+            .actions {
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                margin: 5px;
+                gap: 5px;
+                background-color: inherit;
+
+                button.action {
+                    height: 25px;
+                    width: auto;
+                    border: 1px solid #b7b7b7;
+                    background-color: #e1e1e1;
+                    color: black;
+                    /* transition: background-color, border 0.1s ease-in-out; */
+                    outline: none;
+                }
+
+                button.action:focus, button.action:focus-visible, button.action:focus-within {
+                    outline: none;
+                    border-color: #0068d7;
+                    border-width: 2px;
+                }
+
+                button.action:hover {
+                    outline: black dashed 1px;
+                    outline-offset: -1px;
+                }
+            }
         }
     }
 

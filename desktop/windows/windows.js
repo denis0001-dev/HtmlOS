@@ -93,7 +93,7 @@ class DesktopWindow {
 
     #maximized = false;
     
-    constructor(title, initialWidth, initialHeight, closeButton, maximizeButton, minimizeButton, icon) {
+    constructor(title, initialWidth, initialHeight, closeButton, maximizeButton, minimizeButton, icon, content) {
         this.title = title;
 
         this.#width = initialWidth;
@@ -161,6 +161,28 @@ class DesktopWindow {
 
             </div>
         `
+
+        // Append the content
+        if ([undefined, null].includes(content)) {
+        } else if (content instanceof HTMLElement) {
+            this.content = content;
+        } else if (content instanceof HTMLCollection) {
+            this.content = document.createElement("div");
+            this.content.classList.add("content");
+            this.content.append(...content);
+        } else if (content instanceof String || typeof content == "string") {
+            this.content = document.createElement("div");
+            this.content.classList.add("content");
+            this.content.innerHTML = content;
+        } else {
+            try {
+                this.content = document.createElement("div");
+                this.content.classList.add("content");
+                this.content.innerHTML = content.toString();
+            } catch (e) {
+                throw new TypeError("Invalid content type");
+            }
+        }
 
         // Hide buttons that don't need to be shown
         if (!closeButton) this.closeButton.style.display = 'none';
@@ -240,6 +262,15 @@ class DesktopWindow {
 
     get taskbarIcon() {
         return getTask(this.taskID).taskbarIcon;
+    }
+
+    get content() {
+        return this.element.getElementsByClassName("content")[0];
+    }
+
+    set content(content) {
+        this.content.remove();
+        this.element.appendChild(content);
     }
 
     #updateBounds() {
@@ -768,5 +799,95 @@ class DesktopWindow {
             obj.element.style.top = (obj.element.offsetTop - pos2) + "px";
             obj.element.style.width = (obj.element.offsetWidth - pos1) + "px";
         }
+    }
+}
+
+class IconTextDialog extends DesktopWindow {
+    constructor(title, width, height, _message, _actions, _icon) {
+        super(title, width, height, true, false, false, _icon, null);
+
+        const content = this.content;
+        content.classList.add("icon_text_dialog");
+
+        const icon = document.createElement("div");
+        icon.classList.add("icon_img");
+        content.appendChild(icon);
+        this.icon = _icon;
+
+        const message = document.createElement('div');
+        message.classList.add("message");
+        content.appendChild(message);
+        this.message = _message;
+
+        const actions_html = document.createElement("div");
+        actions_html.classList.add("actions");
+        content.appendChild(actions_html);
+        this.actions = _actions;
+
+        this.content = content;
+    }
+
+    get actions() {
+        const ret = [];
+
+        for (let i = 0; i < this.actions_html.children.length; i++) {
+            const element = this.actions_html.children[i];
+            
+            const name = element.innerHTML;
+            
+            var callback = () => {};
+
+            try {
+                callback = getEventListeners($0).click[0].listener;
+            } catch (e) {
+                console.warn("Couldn't get event listeners, are you using Chrome?");
+            }
+
+            if (!(callback instanceof Function || typeof callback == 'function')) {
+                callback = () => {};
+            }
+
+            ret.push(new Action(name, callback));
+        }
+
+        return ret;
+    }
+
+    set actions(_actions) {
+        this.actions_html.innerHTML = "";
+
+        this.actions_html.classList.add("actions");
+        _actions.forEach(element => {
+            let el = document.createElement("button");
+            el.classList.add("action");
+
+            el.innerHTML = element.name;
+            el.addEventListener('click', () => {
+                element.callback();
+                this.close();
+            });
+
+            this.actions_html.appendChild(el);
+        });
+    }
+
+    get actions_html() {
+        return this.element.querySelector('.content > .actions');
+    }
+
+    get icon() {
+        return this.element.querySelector('.content > .icon_img').dataset.type;
+    }
+
+    set icon(_icon) {
+        this.element.querySelector('.content > .icon_img').dataset.type = _icon;
+    }
+
+    get message() {
+        return this.element.querySelector('.content > .message').innerHTML;
+    }
+
+    set message(_message) {
+        this.element.querySelector('.content > .message').innerHTML = _message;
     }
 }

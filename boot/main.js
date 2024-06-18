@@ -1,3 +1,5 @@
+var cookiesAccepted = false;
+
 async function boot() {
     // Change all cursors to their custom value
     for (let i = 0; i < document.styleSheets.length; i++) {
@@ -46,6 +48,19 @@ async function boot() {
     const desktop = new Desktop(document.getElementById("main"));
 
     desktop.placeIcon(createIcon("Trash", "trash_empty"), 0, 0)
+
+    // Cookies warning
+    const cookies_window = new IconTextDialog("Cookies Warning", 600, 200, 
+        `This website uses cookies to remember your settings 
+        and improve your experience. Click 'OK' to continue.`, [
+            new Action("OK", () => {cookiesAccepted = true; document.cookie = "cookiesAccepted=true"; notification("info", "Cookie Manager", "Cookies accepted.", createActions())}),
+            new Action("Decline cookies", () => {cookiesAccepted = false; notification("error", "Cookie Manager", "Cookies rejected.", createActions())})
+        ],  "warning"
+    )
+
+    if (!document.cookie.split(";").includes("cookiesAccepted=true")) {
+        setTimeout(() => {cookies_window.show()}, 3000);
+    }
 
     // Test window
     const window = new DesktopWindow("test", 500, 300, true, true, true, "application");

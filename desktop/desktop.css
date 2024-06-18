@@ -15,6 +15,30 @@
     background-image: url('../icons/application.ico');
 }
 
+.icon_img[data-type="folder"] {
+    background-image: url('../icons/folder.ico');
+}
+
+.icon_img[data-type="file"] {
+    background-image: url('../icons/file.ico');
+}
+
+.icon_img[data-type="error"] {
+    background-image: url('../icons/error.ico');
+}
+
+.icon_img[data-type="warning"] {
+    background-image: url('../icons/warning.ico');
+}
+
+.icon_img[data-type="info"] {
+    background-image: url('../icons/info.ico');
+}
+
+.icon_img[data-type="question"] {
+    background-image: url('../icons/question.ico');
+}
+
 .icon_img[data-type="none"] {
     background-image: none;
     visibility: hidden;
