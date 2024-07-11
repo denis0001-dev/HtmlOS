@@ -181,6 +181,13 @@
         /* Content */
         > .content {
             flex: 1 0 auto;
+            position: relative;
+
+            iframe {
+                border: none;
+                height: 100%;
+                width: 100%;
+            }
         }
 
         > .content.icon_text_dialog {
@@ -264,14 +271,14 @@
     }
 
     100% {
-        opacity: 0%;
+        opacity: 0;
         transform: scale(0.6);
     }
 }
 
 @keyframes open {
     0% {
-        opacity: 0%;
+        opacity: 0;
         transform: scale(0.6);
     }
 

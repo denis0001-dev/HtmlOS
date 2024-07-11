@@ -1,6 +1,7 @@
 const windows = new Map();
 const tasks = new Map();
 
+// noinspection JSUnusedGlobalSymbols
 function getWindow(taskID) {
     if (taskID instanceof String) {
         return windows.get(taskID);
@@ -62,10 +63,6 @@ class Task {
         return this.#func;
     }
 
-    set func(_func) {
-        throw new Error("Function is final");
-    }
-
     get taskID() {
         return this.#taskID;
     }
@@ -79,6 +76,7 @@ class Task {
     }
 }
 
+// noinspection JSUnusedGlobalSymbols
 class DesktopWindow {
     element;
     #width;
@@ -92,6 +90,9 @@ class DesktopWindow {
     #prevLeft;
 
     #maximized = false;
+
+    // Task
+    #task;
     
     constructor(title, initialWidth, initialHeight, closeButton, maximizeButton, minimizeButton, icon, content) {
         this.title = title;
@@ -127,12 +128,10 @@ class DesktopWindow {
         taskIcon.addEventListener('click', () => {
             this.maximize();
         });
-
         task.taskbarIcon = taskIcon;
-
         taskIcon.style.display = 'none';
-
         document.getElementById("tasks").appendChild(taskIcon);
+        this.#task = task;
 
         this.element.innerHTML = `
             <div class="resizer_up"></div>
@@ -179,10 +178,20 @@ class DesktopWindow {
                 this.content = document.createElement("div");
                 this.content.classList.add("content");
                 this.content.innerHTML = content.toString();
-            } catch (e) {
+            } catch (ignore) {
                 throw new TypeError("Invalid content type");
             }
         }
+
+        // Focus
+        this.element.addEventListener('click', () => {
+            // const target = e.target;
+            // console.log(target);
+            // TODO click after focus
+            this.focus();
+            // if (target === this.element) return;
+            // target.dispatchEvent(new Event("click"));
+        });
 
         // Hide buttons that don't need to be shown
         if (!closeButton) this.closeButton.style.display = 'none';
@@ -190,17 +199,9 @@ class DesktopWindow {
         if (!minimizeButton) this.minimizeButton.style.display = 'none';
 
         // Button actions
-        this.closeButton.addEventListener('click', () => {
-            this.close();
-        })
-
-        this.maximizeButton.addEventListener('click', () => {
-            this.toggleMaximize();
-        })
-
-        this.minimizeButton.addEventListener('click', () => {
-            this.minimize();
-        })
+        this.closeButton.addEventListener('click', () => {this.close()});
+        this.maximizeButton.addEventListener('click', () => {this.toggleMaximize()});
+        this.minimizeButton.addEventListener('click', () => {this.minimize()});
 
         this.element.style.display = 'none';
 
@@ -223,11 +224,6 @@ class DesktopWindow {
         this.#resizer_bottom_left();
         this.#resizer_top_left();
         this.#resizer_top_right();
-
-        // Focus
-        this.element.addEventListener('click', () => {
-            this.focus();
-        })
 
         document.getElementById("windows").appendChild(this.element);
 
@@ -266,7 +262,7 @@ class DesktopWindow {
     }
 
     get taskbarIcon() {
-        return getTask(this.taskID).taskbarIcon;
+        return this.task.taskbarIcon;
     }
 
     get content() {
@@ -294,13 +290,19 @@ class DesktopWindow {
         this.element.style.minHeight = minHeight + "px";
     }
 
+    get task() {
+        return this.#task;
+    }
+
     #updateBounds() {
         this.#width = Number(window.getComputedStyle(this.element).width.replace("px", ""));
         this.#height = Number(window.getComputedStyle(this.element).height.replace("px",""));
     }
 
-    focus() {
+    async focus() {
         const windows = document.querySelector("#windows");
+        if (windows.childNodes[windows.childNodes.length - 1] === this.element) return;
+        await delay(1);
         windows.appendChild(this.element);
     }
 
@@ -334,15 +336,13 @@ class DesktopWindow {
         this.element.style.width = width + "px";
     }
 
-    close() {
+    async close() {
         this.element.classList.add("closing");
         this.taskbarIcon.classList.add("disappear");
-        setTimeout(() => {
-            this.element.remove();
-            this.taskbarIcon.remove();
-            windows.delete(this.taskID);
-            getTask(this.taskID).finish();
-        }, 250);
+        await delay(250);
+        this.taskbarIcon.remove();
+        this.element.remove();
+        windows.delete(this.taskID);
     }
 
     async maximize() {
@@ -459,7 +459,7 @@ class DesktopWindow {
             obj.restore();
             obj.focus();
             frame.style.cursor = "var(--cur-move)";
-            e = e || window.event;
+            
             e.preventDefault();
 
             // get the mouse cursor position at startup:
@@ -471,7 +471,6 @@ class DesktopWindow {
         }
         
         function elementDrag(e) {
-            e = e || window.event;
             e.preventDefault();
             // calculate the new cursor position:
             pos1 = pos3 - e.clientX;
@@ -536,7 +535,7 @@ class DesktopWindow {
 
 
         function dragMouseDown(e) {
-            e = e || window.event;
+            
             e.preventDefault();
         
             // get the mouse cursor position at startup:
@@ -548,7 +547,7 @@ class DesktopWindow {
         }
         
         function elementDrag(e) {
-            e = e || window.event;
+            
             e.preventDefault();
         
             // calculate the new cursor position:
@@ -578,7 +577,7 @@ class DesktopWindow {
 
 
         function dragMouseDown(e) {
-            e = e || window.event;
+            
             e.preventDefault();
         
             // get the mouse cursor position at startup:
@@ -590,7 +589,7 @@ class DesktopWindow {
         }
         
         function elementDrag(e) {
-            e = e || window.event;
+            
             e.preventDefault();
         
             // calculate the new cursor position:
@@ -614,7 +613,7 @@ class DesktopWindow {
 
 
         function dragMouseDown(e) {
-            e = e || window.event;
+            
             e.preventDefault();
         
             // get the mouse cursor position at startup:
@@ -626,7 +625,7 @@ class DesktopWindow {
         }
         
         function elementDrag(e) {
-            e = e || window.event;
+            
             e.preventDefault();
         
             // calculate the new cursor position:
@@ -650,7 +649,7 @@ class DesktopWindow {
 
 
         function dragMouseDown(e) {
-            e = e || window.event;
+            
             e.preventDefault();
         
             // get the mouse cursor position at startup:
@@ -662,7 +661,7 @@ class DesktopWindow {
         }
         
         function elementDrag(e) {
-            e = e || window.event;
+            
             e.preventDefault();
         
             // calculate the new cursor position:
@@ -687,7 +686,7 @@ class DesktopWindow {
 
 
         function dragMouseDown(e) {
-            e = e || window.event;
+            
             e.preventDefault();
         
             // get the mouse cursor position at startup:
@@ -699,7 +698,7 @@ class DesktopWindow {
         }
         
         function elementDrag(e) {
-            e = e || window.event;
+            
             e.preventDefault();
         
             // calculate the new cursor position:
@@ -724,7 +723,7 @@ class DesktopWindow {
 
 
         function dragMouseDown(e) {
-            e = e || window.event;
+            
             e.preventDefault();
         
             // get the mouse cursor position at startup:
@@ -736,7 +735,7 @@ class DesktopWindow {
         }
         
         function elementDrag(e) {
-            e = e || window.event;
+            
             e.preventDefault();
         
             // calculate the new cursor position:
@@ -762,7 +761,7 @@ class DesktopWindow {
 
 
         function dragMouseDown(e) {
-            e = e || window.event;
+            
             e.preventDefault();
         
             // get the mouse cursor position at startup:
@@ -774,7 +773,7 @@ class DesktopWindow {
         }
         
         function elementDrag(e) {
-            e = e || window.event;
+            
             e.preventDefault();
         
             // calculate the new cursor position:
@@ -801,7 +800,7 @@ class DesktopWindow {
 
 
         function dragMouseDown(e) {
-            e = e || window.event;
+            
             e.preventDefault();
         
             // get the mouse cursor position at startup:
@@ -813,7 +812,7 @@ class DesktopWindow {
         }
         
         function elementDrag(e) {
-            e = e || window.event;
+            
             e.preventDefault();
         
             // calculate the new cursor position:
@@ -868,8 +867,9 @@ class IconTextDialog extends DesktopWindow {
             var callback = () => {};
 
             try {
+                // noinspection JSUnresolvedReference
                 callback = getEventListeners($0).click[0].listener;
-            } catch (e) {
+            } catch (ignore) {
                 console.warn("Couldn't get event listeners, are you using Chrome?");
             }
 
@@ -913,6 +913,7 @@ class IconTextDialog extends DesktopWindow {
         this.element.querySelector('.content > .icon_img').dataset.type = _icon;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get message() {
         return this.element.querySelector('.content > .message').innerHTML;
     }
