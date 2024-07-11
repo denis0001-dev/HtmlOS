@@ -9,7 +9,7 @@ async function boot() {
         var styleSheetText;
         try {
         styleSheetText = Array.from(styleSheet.cssRules).map(rule => rule.cssText).join(' ');
-        } catch (e) {
+        } catch (ignore) {
             continue;
         }
 
@@ -67,6 +67,8 @@ async function boot() {
 
     if (!document.cookie.split(";").includes("cookiesAccepted=true")) {
         setTimeout(() => {cookies_window.show()}, 3000);
+    } else {
+        cookies_window.close();
     }
 
     // Test window
