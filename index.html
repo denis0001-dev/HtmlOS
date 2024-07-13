@@ -7,24 +7,24 @@
 
         <title>Html OS</title>
 
-        <link rel="icon" type="image/png" href="favicon.png" />
+        <link rel="icon" type="image/png" href="HtmlOS/Boot/splash.png" />
 
-        <link rel="stylesheet" href="boot/loading_screen.css" />
-        <link rel="stylesheet" href="desktop/desktop.css" />
-        <link rel="stylesheet" href="font/stylesheet.css" />
-        <link rel="stylesheet" href="desktop/windows/windows.css" />
-        <link rel="stylesheet" href="desktop/notifications/notifications.css" />
-        <link rel="stylesheet" href="cursors/cursors.css" />
-        <link rel="stylesheet" href="apps/icons.css" />
+        <link rel="stylesheet" href="HtmlOS/Boot/loading_screen.css" />
+        <link rel="stylesheet" href="HtmlOS/SystemJS/desktop/main.css" />
+        <link rel="stylesheet" href="HtmlOS/Fonts/Segoe%20UI/stylesheet.css" />
+        <link rel="stylesheet" href="HtmlOS/SystemJS/desktop/windows/main.css" />
+        <link rel="stylesheet" href="HtmlOS/SystemJS/desktop/notifications/main.css" />
+        <link rel="stylesheet" href="HtmlOS/Cursors/cursors.css" />
+        <link rel="stylesheet" href="HtmlOS/Resources/Icons/main.css" />
 
-        <script src="boot/loading_screen.js"></script>
-        <script src="lib/utils.js"></script>
-        <script src="boot/main.js"></script>
-        <script src="desktop/desktop.js"></script>
-        <script src="desktop/windows/windows.js"></script>
-        <script src="desktop/notifications/notifications.js"></script>
-        <script src="lib/style_cache.js"></script>
-        <script src="apps/apps.js"></script>
+        <script src="HtmlOS/Boot/loading_screen.js"></script>
+        <script src="HtmlOS/Library/utils.js"></script>
+        <script src="HtmlOS/Boot/index.js"></script>
+        <script src="HtmlOS/SystemJS/desktop/index.js"></script>
+        <script src="HtmlOS/SystemJS/desktop/windows/index.js"></script>
+        <script src="HtmlOS/SystemJS/desktop/notifications/index.js"></script>
+        <script src="HtmlOS/Library/style_cache.js"></script>
+        <script src="HtmlOS/SystemJS/apps.js"></script>
 
         <style>
             html, body {
@@ -58,18 +58,14 @@
                 e.preventDefault();
             });
 
-            document.onreadystatechange = function() {
-                if (document.readyState === 'complete') {
-                    boot();
-                }
-            }
+            document.addEventListener("DOMContentLoaded", boot);
         </script>
     </head>
 
     <body>
         <div id="loading_screen">
             <div class="wrapper">
-                <img id="splash" src="boot/splash.png"  alt="" />
+                <img id="splash" src="HtmlOS/Boot/splash.png" alt="" />
                 <span id="spinner">
                     &#xE05E
                 </span>
@@ -113,7 +109,6 @@
             </div>
 
             <div id="windows"></div>
-
             <div id="notification"></div>
         </div>
     </body>
