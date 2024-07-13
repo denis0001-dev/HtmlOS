@@ -106,6 +106,7 @@ function main() {
 
     addEventListener("keydown", async (e) => {
         // console.log(e);
+        e.preventDefault();
         if (e.key === "ArrowLeft" && input) {
             moveCaret_left();
         } else if (e.key === "ArrowRight" && input) {
