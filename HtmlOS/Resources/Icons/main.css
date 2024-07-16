@@ -49,6 +49,11 @@
     background-image: url("../../SystemJS/cmd/icon.ico");
 }
 
+.icon_img[data-type="minecraft"] {
+    background-image: url("https://eaglercraft.com/img/game.png");
+}
+
+/* Blank */
 .icon_img[data-type="none"] {
     background-image: none;
     visibility: hidden;
