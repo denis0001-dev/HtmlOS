@@ -1,68 +1,48 @@
 function delay(milis) {
     return new Promise(resolve => setTimeout(resolve, milis));
 }
-
 function urlExists(url) {
     var request;
     if (window.XMLHttpRequest) {
         request = new XMLHttpRequest();
-    } else {
+    }
+    else {
         request = new ActiveXObject("Microsoft.XMLHTTP");
     }
     request.open('GET', url, false);
     request.send();
-
     return request.status === 200;
 }
-
 function getChildByClass(child, className) {
     return Array.from(child.children).find(item => item.classList.contains(className));
 }
-
-function nextElement(array, element) {
-    return array.indexOf(nextElementIndex(array, element));
-}
-
-function nextElementIndex(array, element) {
-    const index = array.indexOf(element);
-    try {
-        return index + 1;
-    } catch (error) {
-        return index;
-    }
-}
-
 function generateRandomString(length) {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
     let counter = 0;
     while (counter < length) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      counter += 1;
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        counter += 1;
     }
     return result;
 }
-
 function midScreenX() {
-    return (Number(window.getComputedStyle(document.body).width) / 2)
+    return (Number(window.getComputedStyle(document.body).width) / 2);
 }
-
 function midScreenY() {
-    return (Number(window.getComputedStyle(document.body).height) / 2)
+    return (Number(window.getComputedStyle(document.body).height) / 2);
 }
-
 function closeDragElement() {
     document.onmouseup = null;
     document.onmousemove = null;
 }
-
-function changeStylesheetRule(stylesheet, selector, property, value) {
+/* function changeStylesheetRule(stylesheet: CSSStyleSheet, selector: string, property: string, value: string) {
     // Make the strings lowercase
     selector = selector.toLowerCase();
     property = property.toLowerCase();
     value = value.toLowerCase();
-    
+
     // Change it if it exists
     for(var i = 0; i < stylesheet.cssRules.length; i++) {
         var rule = stylesheet.cssRules[i];
@@ -71,11 +51,16 @@ function changeStylesheetRule(stylesheet, selector, property, value) {
             return;
         }
     }
-  
+
     // Add it if it does not
     stylesheet.insertRule(selector + " { " + property + ": " + value + "; }", 0);
+} */
+function nextElement(array, element) {
+    return array.indexOf(nextElementIndex(array, element));
 }
-
+function nextElementIndex(array, element) {
+    return array.indexOf(element) + 1;
+}
 /**
  * Returns an HTML-safe version of the provided string.
  * @param str The source string.
@@ -92,7 +77,6 @@ function safeHTMLString(str) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
 }
-
 /**
  * Gets the value stored in document cookies.
  * Returns null if the cookie doesn't exist.
@@ -101,7 +85,6 @@ function safeHTMLString(str) {
  */
 function getCookie(name) {
     const parts = document.cookie.split(";");
-
     for (let part of parts) {
         const trimmedPart = part.trim();
         if (trimmedPart.startsWith(name + "=")) {
@@ -111,7 +94,6 @@ function getCookie(name) {
     }
     return null;
 }
-
 /**
  * Parses a string to an object type.
  * <br/>
@@ -131,7 +113,8 @@ function parseString(value) {
     // Boolean
     if (value === "true") {
         return true;
-    } else if (value === "false") {
+    }
+    else if (value === "false") {
         return false;
     }
     // Numbers
@@ -140,28 +123,25 @@ function parseString(value) {
         return number;
     }
     // JSON/array
-    if (
-        (value.startsWith("{") && value.endsWith("}"))
+    if ((value.startsWith("{") && value.endsWith("}"))
         ||
-        (value.startsWith("[") && value.endsWith("]"))
-    ) {
+            (value.startsWith("[") && value.endsWith("]"))) {
         try {
             return JSON.parse(value);
-        } catch (e) {
-            console.warn("Error parsing JSON: ",e);
+        }
+        catch (e) {
+            console.warn("Error parsing JSON: ", e);
         }
     }
     // HTML
     const regex = /<[\w-]+( [\w-]+=".*")*(\s*\/>|\s*>(.|\n)*<\/[\w-]+>)/gm;
     if (regex.exec(value)) {
         const parse = Range.prototype.createContextualFragment.bind(document.createRange());
-
         return parse(value).children[0];
     }
     // String fallback
     return value;
 }
-
 /**
  * Sets a cookie to the given value.
  * If the value is <code>undefined</code> or <code>null</code>,
@@ -170,24 +150,19 @@ function parseString(value) {
  * @param value The value. Can be anything.
  */
 function setCookie(name, value) {
-    let val = value;
-
-    if ([undefined, null].includes(val)) {
-        document.cookie = `${name}=; Max-Age=-99999999;`
+    if ([undefined, null].includes(value)) {
+        document.cookie = `${name}=; Max-Age=-99999999;`;
         return;
     }
-
-    if (val instanceof HTMLElement) {
-        val = val.outerHTML;
+    if (value instanceof HTMLElement) {
+        value = value.outerHTML;
     }
-
-    if (typeof val === "object") {
-        val = JSON.stringify(val);
+    else if (typeof value === "object") {
+        value = JSON.stringify(value);
     }
-
-    document.cookie = `${name}=${encodeURIComponent(val)}`;
+    const newValue = value.toString();
+    document.cookie = `${name}=${encodeURIComponent(newValue)}`;
 }
-
 /**
  * Returns an object containing all cookies present in the document.
  * The properties names are the cookie names.
@@ -196,29 +171,25 @@ function setCookie(name, value) {
 function getCookies() {
     const cookies = {};
     const parts = document.cookie.split(";");
-
     for (let part of parts) {
         const trimmedPart = part.trim();
         if (trimmedPart) {
             const [name, value] = trimmedPart.split("=");
-
             cookies[name] = parseString(decodeURIComponent(value));
         }
     }
-
     return cookies;
 }
-
 /**
  * Clears all cookies present in the document.
  */
 function clearCookies() {
     document.cookie.split(";")
-        .forEach(function(c) {
-            document.cookie = c
-                .replace(/^ +/, "")
-                .replace(/=.*/, "=;expires=" +
-                    new Date().toUTCString()
-                    + ";path=/");
-        });
+        .forEach(function (c) {
+        document.cookie = c
+            .replace(/^ +/, "")
+            .replace(/=.*/, "=;expires=" +
+            new Date().toUTCString()
+            + ";path=/");
+    });
 }
