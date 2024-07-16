@@ -245,7 +245,8 @@
         }
     }
 
-    .window:last-child > .frame .title {
+    /* Focused window */
+    > .window:where(:last-child, .focused) > .frame .title {
         color: black;
     }
 
