@@ -1,6 +1,7 @@
 :root {
     --uwp-ui-dark-color: rgba(16, 16, 16, 0.9);
     --uwp-ui-blur: blur(50px);
+    --uwp-ui-hover-color: #3d3d3d;
 }
 
 * {
@@ -42,7 +43,7 @@
             }
 
             #start:hover {
-                background-color: #3d3d3d;
+                background-color: var(--uwp-ui-hover-color);
             }
 
             #tasks {

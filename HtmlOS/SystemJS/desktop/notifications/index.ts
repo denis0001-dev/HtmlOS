@@ -1,12 +1,18 @@
-var notificationActive = false;
-async function notification(icon, title, message, actions) {
+var notificationActive: boolean = false;
+
+async function notification(
+    icon: string,
+    title: string,
+    message: string,
+    actions: HTMLDivElement
+): Promise<void> {
     const notification = document.getElementById("notification");
     if (notificationActive) {
         notification.innerHTML = '';
         notification.dataset.id = '';
         notification.classList.forEach((value) => {
             notification.classList.remove(value);
-        });
+        })
         notification.classList.add("hidden");
         await delay(250);
     }
@@ -26,20 +32,22 @@ async function notification(icon, title, message, actions) {
     <p class="body">
         ${message}
     </p>
-    `;
+    `
     notification.classList.remove("hidden");
     notification.appendChild(actions);
-    notification.querySelector(".head > .right > .close").addEventListener("click", removeNotification);
-    const id = generateRandomString(8);
+    notification.querySelector(".head > .right > .close").addEventListener("click",removeNotification)
+
+    const id: string = generateRandomString(8);
     notification.dataset.id = id;
     notificationActive = true;
+
     notification.classList.add("appear");
     new Audio('HtmlOS/Media/notification.mp3').play();
+
     for (let i = 0; i < 700; i++) {
         if (notificationActive && notification.dataset.id === id) {
             await delay(1);
-        }
-        else {
+        } else {
             notificationActive = false;
             return;
         }
@@ -47,10 +55,12 @@ async function notification(icon, title, message, actions) {
     if (!notification.classList.contains("hidden") && notification.dataset.id === id && notificationActive) {
         removeNotification();
     }
+
     notification.dataset.id = '';
 }
-async function removeNotification() {
-    const notification = document.getElementById("notification");
+
+async function removeNotification(): Promise<void> {
+    const notification: HTMLDivElement = document.getElementById("notification") as HTMLDivElement;
     notification.classList.remove("appear");
     notification.classList.add("disappear");
     await delay(500);
@@ -58,12 +68,13 @@ async function removeNotification() {
     notification.classList.add("hidden");
     notification.innerHTML = "";
 }
-function createActions(actionArray = undefined) {
-    const actions = document.createElement("div");
+
+function createActions(actionArray: Action[] | undefined | null = undefined): HTMLDivElement {
+    const actions: HTMLDivElement = document.createElement("div");
     actions.classList.add("actions");
     if (actionArray) {
         actionArray.forEach(action => {
-            const button = document.createElement("button");
+            const button: HTMLButtonElement = document.createElement("button");
             button.classList.add("action");
             button.innerHTML = action.name;
             button.onclick = () => {
@@ -75,10 +86,12 @@ function createActions(actionArray = undefined) {
     }
     return actions;
 }
+
 class Action {
-    name;
-    callback;
-    constructor(name, callback) {
+    public name: string;
+    public callback: Function;
+
+    constructor(name: string, callback: Function) {
         this.name = name;
         this.callback = callback;
     }
