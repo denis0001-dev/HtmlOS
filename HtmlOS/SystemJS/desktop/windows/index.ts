@@ -3,8 +3,14 @@
 const windows: Map<string, DesktopWindow> = new Map();
 const tasks: Map<string, Task> = new Map();
 
+// Action shorthands
+const OKAction: Action[] = [new Action("OK", empty)];
+
+// Focus
 var focusedWindow: DesktopWindow = null;
 var maxWindowZIndex: number = 0;
+
+const lowestWindowZIndex: number = 2;
 
 // noinspection JSUnusedGlobalSymbols
 function getWindow(taskID: string | HTMLElement): DesktopWindow | null {
@@ -280,6 +286,14 @@ class DesktopWindow {
         this.element.style.minHeight = minHeight + "px";
     }
 
+    get zIndex(): number {
+        return Number(this.element.style.zIndex);
+    }
+
+    set zIndex(zIndex: number) {
+        this.element.style.zIndex = zIndex.toString();
+    }
+
     private updateBounds(): void {
         this.#width = Number(window.getComputedStyle(this.element).width.replace("px", ""));
         this.#height = Number(window.getComputedStyle(this.element).height.replace("px",""));
@@ -287,9 +301,17 @@ class DesktopWindow {
 
     async focus(): Promise<void> {
         const windows: HTMLDivElement = document.querySelector("#windows");
-        if (windows.childNodes[windows.childNodes.length - 1] === this.element) return;
+        /* if (windows.childNodes[windows.childNodes.length - 1] === this.element) return;
         await delay(1);
-        windows.appendChild(this.element);
+        windows.appendChild(this.element); */
+        if (focusedWindow !== null) {
+            focusedWindow.element.classList.remove("focused");
+        }
+        maxWindowZIndex = Math.max(maxWindowZIndex, this.zIndex);
+
+        focusedWindow = this;
+        this.zIndex = maxWindowZIndex;
+        this.element.classList.add("focused");
     }
 
     async show(): Promise<void> {
@@ -943,8 +965,11 @@ class ErrorDialog extends IconTextDialog {
     ) {
         actions = actions || [];
         super(title, width, height, message, actions, "error");
+    }
 
+    async show(): Promise<void> {
         new Audio("HtmlOS/Media/error.wav").play();
+        await super.show();
     }
 }
 
