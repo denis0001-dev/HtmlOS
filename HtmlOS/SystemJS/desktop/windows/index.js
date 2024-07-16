@@ -1,8 +1,12 @@
 // noinspection DuplicatedCode,JSUnusedGlobalSymbols
 const windows = new Map();
 const tasks = new Map();
+// Action shorthands
+const OKAction = [new Action("OK", empty)];
+// Focus
 var focusedWindow = null;
 var maxWindowZIndex = 0;
+const lowestWindowZIndex = 2;
 // noinspection JSUnusedGlobalSymbols
 function getWindow(taskID) {
     if (taskID instanceof String || typeof taskID === "string") {
@@ -233,16 +237,28 @@ class DesktopWindow {
     set minHeight(minHeight) {
         this.element.style.minHeight = minHeight + "px";
     }
+    get zIndex() {
+        return Number(this.element.style.zIndex);
+    }
+    set zIndex(zIndex) {
+        this.element.style.zIndex = zIndex.toString();
+    }
     updateBounds() {
         this.#width = Number(window.getComputedStyle(this.element).width.replace("px", ""));
         this.#height = Number(window.getComputedStyle(this.element).height.replace("px", ""));
     }
     async focus() {
         const windows = document.querySelector("#windows");
-        if (windows.childNodes[windows.childNodes.length - 1] === this.element)
-            return;
+        /* if (windows.childNodes[windows.childNodes.length - 1] === this.element) return;
         await delay(1);
-        windows.appendChild(this.element);
+        windows.appendChild(this.element); */
+        if (focusedWindow !== null) {
+            focusedWindow.element.classList.remove("focused");
+        }
+        maxWindowZIndex = Math.max(maxWindowZIndex, this.zIndex);
+        focusedWindow = this;
+        this.zIndex = maxWindowZIndex;
+        this.element.classList.add("focused");
     }
     async show() {
         this.element.classList.add("opening");
@@ -734,7 +750,10 @@ class ErrorDialog extends IconTextDialog {
     constructor(title, width, height, message, actions) {
         actions = actions || [];
         super(title, width, height, message, actions, "error");
+    }
+    async show() {
         new Audio("HtmlOS/Media/error.wav").play();
+        await super.show();
     }
 }
 class EmptyWindow extends DesktopWindow {

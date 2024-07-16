@@ -1,14 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <!-- Metadata -->
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta lang="en" />
 
-        <title>Html OS</title>
+        <!-- Description -->
+        <meta name="author" content="denis0001-dev" />
+        <meta name="description"
+              content="An operating system
+              created in HTML, CSS and JavaScript
+              that looks like Windows 10."
+        />
 
+        <!-- Title & icon -->
+        <title>Html OS</title>
         <link rel="icon" type="image/png" href="HtmlOS/Boot/splash.png" />
 
+        <!-- Styles & scripts -->
         <link rel="stylesheet" href="HtmlOS/Boot/loading_screen.css" />
         <link rel="stylesheet" href="HtmlOS/SystemJS/desktop/main.css" />
         <link rel="stylesheet" href="HtmlOS/Fonts/Segoe%20UI/stylesheet.css" />
@@ -25,7 +35,9 @@
         <script src="HtmlOS/SystemJS/desktop/notifications/index.js"></script>
         <script src="HtmlOS/Library/style_cache.js"></script>
         <script src="HtmlOS/SystemJS/apps.js"></script>
+        <script src="HtmlOS/SystemJS/console.js"></script>
 
+        <!-- Global styles -->
         <style>
             html, body {
                 background-color: black;
@@ -53,11 +65,14 @@
         <!-- Animation cache -->
         <style id="animation_cache"></style>
 
+        <!-- Entry point -->
         <script>
+            // Disable right click context menu
             window.addEventListener('contextmenu', e => {
                 e.preventDefault();
             });
 
+            // Boot when content is loaded
             document.addEventListener("DOMContentLoaded", boot);
         </script>
     </head>
@@ -76,13 +91,12 @@
             <div id="taskbar">
                 <div class="left">
                     <div id="start"></div>
-                    <div id="search"></div>
-                    <div id="tasks">
-
-                    </div>
+                    <div id="search"></div> <!-- Not implemented yet -->
+                    <div id="tasks"></div>
                     <div id="applications"></div>
                 </div>
 
+                <!-- Not implemented yet -->
                 <div class="right">
                     <div id="tray"></div>
                     <div id="time"></div>

@@ -247,7 +247,7 @@
 
     /* Focused window */
     > .window:where(:last-child, .focused) > .frame .title {
-        color: black;
+        color: black !important;
     }
 
     /* Close & open animations */
