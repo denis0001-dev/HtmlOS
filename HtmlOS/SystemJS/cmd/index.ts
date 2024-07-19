@@ -119,8 +119,21 @@ function main() {
     let originalCommand: string;
 
     addEventListener("keydown", async (e) => {
+        let value: string;
         // console.log(e);
         e.preventDefault();
+
+        function finalizeHistory() {
+            value = value.trim();
+            if (value === originalCommand) return;
+            originalCommand = currentInput.textContent;
+
+            currentInput.textContent = value;
+            caret.style.position = "static";
+            caret_col = value.length;
+            updatePos();
+        }
+
         if (e.key === "ArrowLeft" && input) {
             moveCaret_left();
         } else if (e.key === "ArrowRight" && input) {
@@ -186,37 +199,23 @@ function main() {
         } else if (e.key === "ArrowUp" && !commandRunning) {
             const his = cmdHistory.toReversed();
             historyPos++;
-            let value = his[historyPos - 1];
+            value = his[historyPos - 1];
 
             if (!value) {
                 historyPos--;
                 return;
             }
-            value = value.trim();
-            if (value === originalCommand) return;
-            originalCommand = currentInput.textContent;
-
-            currentInput.textContent = value;
-            caret.style.position = "static";
-            caret_col = value.length;
-            updatePos();
+            finalizeHistory();
         } else if (e.key === "ArrowDown" && !commandRunning) {
             const his = cmdHistory.toReversed();
             historyPos--;
-            let value = his[historyPos];
+            value = his[historyPos];
 
             if (!value) {
                 historyPos++;
                 return;
             }
-            value = value.trim();
-            if (value === originalCommand) return;
-            originalCommand = currentInput.textContent;
-
-            currentInput.textContent = value;
-            caret.style.position = "static";
-            caret_col = value.length;
-            updatePos();
+            finalizeHistory();
         } else if (e.key.length === 1) {
             moveCaret_right(true);
             currentInput.textContent = currentInput.textContent.slice(0, caret_col - 1) + e.key + currentInput.textContent.slice(caret_col - 1);
@@ -442,6 +441,12 @@ function main() {
 
             variables[key] = value;
             return 0;
+        },
+        "shutdown": () => {
+            (top as any).shutdown();
+        },
+        "reboot": () => {
+            (top as any).reboot();
         }
     }
 

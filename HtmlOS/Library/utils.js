@@ -194,3 +194,6 @@ function clearCookies() {
             + ";path=/");
     });
 }
+function CSSImportURL(url) {
+    return `@import url("${url}");`;
+}

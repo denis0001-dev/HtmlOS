@@ -11,9 +11,8 @@
 #main {
     visibility: hidden;
     display: flex;
-    flex-direction: column-reverse;
     flex-flow: column-reverse;
-    position: relative;
+    /* position: relative; */
 
     #taskbar {
         position: absolute;
@@ -201,6 +200,23 @@
                 outline-offset: -2px;
             }
         }
+    }
+}
+
+#exitScreen {
+    background-color: #1a5a8c;
+    color: white;
+    z-index: 999;
+    /* height: 100%;
+    width: 100%; */
+    display: flex;
+    visibility: hidden;
+    justify-content: center;
+    align-items: center;
+
+    .text {
+        font-size: 20px;
+        margin-top: 10px;
     }
 }
 

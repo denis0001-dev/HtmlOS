@@ -217,3 +217,7 @@ function clearCookies(): void {
                     + ";path=/");
         });
 }
+
+function CSSImportURL(url: string) {
+    return `@import url("${url}");`
+}

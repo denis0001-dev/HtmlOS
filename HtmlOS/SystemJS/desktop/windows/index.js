@@ -1,49 +1,51 @@
 // noinspection DuplicatedCode,JSUnusedGlobalSymbols
-const windows = new Map();
-const tasks = new Map();
-// Action shorthands
-const OKAction = [new Action("OK", empty)];
+document.addEventListener("DOMContentLoaded", () => {
+    OKAction = [new Action("OK", empty)];
+});
 // Focus
 var focusedWindow = null;
-var maxWindowZIndex = 0;
+// var maxWindowZIndex: number = 0;
 const lowestWindowZIndex = 2;
-// noinspection JSUnusedGlobalSymbols
+/**
+ * @deprecated
+ * @param taskID
+ */
 function getWindow(taskID) {
-    if (taskID instanceof String || typeof taskID === "string") {
-        return windows.get(taskID) || null;
-    }
-    else if (taskID instanceof HTMLElement) {
-        return windows.get(taskID.id.replace("window_", "")) || null;
-    }
-    else {
-        return null;
-    }
+    return DesktopWindow.get(taskID);
 }
+/**
+ * @deprecated
+ * @param taskID
+ */
 function getTask(taskID) {
-    if (taskID instanceof String || typeof taskID == "string") {
-        return tasks.get(taskID) || null;
-    }
-    else if (taskID instanceof HTMLElement) {
-        return tasks.get(taskID.id.replace("task-", "")) || null;
-    }
-    else {
-        return null;
-    }
+    return Task.get(taskID);
 }
 class Task {
+    static tasks = new Map();
     func;
     taskID;
     constructor(func) {
         this.func = func;
         this.taskID = generateRandomString(8);
-        tasks.set(this.taskID, this);
+        Task.tasks.set(this.taskID, this);
         this.execute();
     }
     async execute() {
         return await this.func();
     }
     finish() {
-        tasks.delete(this.taskID);
+        Task.tasks.delete(this.taskID);
+    }
+    static get(taskID) {
+        if (taskID instanceof String || typeof taskID == "string") {
+            return Task.tasks.get(taskID) || null;
+        }
+        else if (taskID instanceof HTMLElement) {
+            return Task.tasks.get(taskID.id.replace("task-", "")) || null;
+        }
+        else {
+            return null;
+        }
     }
 }
 class EmptyTask extends Task {
@@ -62,6 +64,7 @@ class WindowTask extends EmptyTask {
 }
 // noinspection JSUnusedGlobalSymbols
 class DesktopWindow {
+    static windows = new Map();
     element;
     #width;
     #height;
@@ -192,7 +195,7 @@ class DesktopWindow {
         this.#resizer_top_left();
         this.#resizer_top_right();
         document.getElementById("windows").appendChild(this.element);
-        windows.set(this.taskID, this);
+        DesktopWindow.windows.set(this.taskID, this);
     }
     get width() {
         this.updateBounds();
@@ -247,18 +250,32 @@ class DesktopWindow {
         this.#width = Number(window.getComputedStyle(this.element).width.replace("px", ""));
         this.#height = Number(window.getComputedStyle(this.element).height.replace("px", ""));
     }
-    async focus() {
-        const windows = document.querySelector("#windows");
-        /* if (windows.childNodes[windows.childNodes.length - 1] === this.element) return;
-        await delay(1);
-        windows.appendChild(this.element); */
-        if (focusedWindow !== null) {
-            focusedWindow.element.classList.remove("focused");
+    static get(taskID) {
+        if (taskID instanceof String || typeof taskID === "string") {
+            return DesktopWindow.windows.get(taskID) || null;
         }
-        maxWindowZIndex = Math.max(maxWindowZIndex, this.zIndex);
-        focusedWindow = this;
-        this.zIndex = maxWindowZIndex;
-        this.element.classList.add("focused");
+        else if (taskID instanceof HTMLElement) {
+            return DesktopWindow.windows.get(taskID.id.replace("window_", "")) || null;
+        }
+        else {
+            return null;
+        }
+    }
+    static updateWindowZIndexes() {
+        let i = 0;
+        for (const [key, value] of DesktopWindow.windows.entries()) {
+            value.zIndex = lowestWindowZIndex + i;
+            focusedWindow = value;
+            focusedWindow.element.classList.remove("focused");
+            i++;
+        }
+        focusedWindow.element.classList.add("focused");
+    }
+    async focus() {
+        const w = DesktopWindow;
+        w.windows.delete(this.taskID);
+        w.windows.set(this.taskID, this);
+        w.updateWindowZIndexes();
     }
     async show() {
         this.element.classList.add("opening");
@@ -292,7 +309,7 @@ class DesktopWindow {
         await delay(250);
         this.taskbarIcon.remove();
         this.element.remove();
-        windows.delete(this.taskID);
+        DesktopWindow.windows.delete(this.taskID);
     }
     async maximize() {
         this.updateBounds();

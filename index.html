@@ -27,15 +27,24 @@
         <link rel="stylesheet" href="HtmlOS/Cursors/cursors.css" />
         <link rel="stylesheet" href="HtmlOS/Resources/Icons/main.css" />
 
-        <script src="HtmlOS/Boot/loading_screen.js"></script>
-        <script src="HtmlOS/Library/utils.js"></script>
+        <!-- Boot -->
         <script src="HtmlOS/Boot/index.js"></script>
+        <script src="HtmlOS/Boot/loading_screen.js"></script>
+        <!-- Library -->
+        <script src="HtmlOS/Library/style_cache.js"></script>
+        <script src="HtmlOS/Library/utils.js"></script>
+        <script src="HtmlOS/Library/anti-rightclick.js"></script>
+        <!-- Desktop -->
         <script src="HtmlOS/SystemJS/desktop/index.js"></script>
         <script src="HtmlOS/SystemJS/desktop/windows/index.js"></script>
         <script src="HtmlOS/SystemJS/desktop/notifications/index.js"></script>
-        <script src="HtmlOS/Library/style_cache.js"></script>
+        <!-- Apps -->
         <script src="HtmlOS/SystemJS/apps.js"></script>
+        <script src="HtmlOS/SystemJS/shutdown/index.js"></script>
+        <!-- Console notifications -->
         <script src="HtmlOS/SystemJS/console.js"></script>
+        <!-- UI library -->
+        <script src="HtmlOS/SystemJS/UI/index.js"></script>
 
         <!-- Global styles -->
         <style>
@@ -67,11 +76,6 @@
 
         <!-- Entry point -->
         <script>
-            // Disable right click context menu
-            window.addEventListener('contextmenu', e => {
-                e.preventDefault();
-            });
-
             // Boot when content is loaded
             document.addEventListener("DOMContentLoaded", boot);
         </script>
@@ -81,9 +85,8 @@
         <div id="loading_screen">
             <div class="wrapper">
                 <img id="splash" src="HtmlOS/Boot/splash.png" alt="" />
-                <span id="spinner">
-                    &#xE05E
-                </span>
+                <!-- <span id="spinner">&#xE05E</span> -->
+                <uwp-spinner id="spinner"></uwp-spinner>
             </div>
         </div>
 
@@ -124,6 +127,13 @@
 
             <div id="windows"></div>
             <div id="notification"></div>
+        </div>
+
+        <div id="exitScreen">
+            <div class="wrapper">
+                <uwp-spinner size="40"></uwp-spinner>
+                <div class="text">Shutting down</div>
+            </div>
         </div>
     </body>
 </html>
