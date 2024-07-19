@@ -32,7 +32,7 @@
     <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="31">
+          <list size="32">
             <item index="0" class="java.lang.String" itemvalue="nobr" />
             <item index="1" class="java.lang.String" itemvalue="noembed" />
             <item index="2" class="java.lang.String" itemvalue="comment" />
@@ -64,6 +64,7 @@
             <item index="28" class="java.lang.String" itemvalue="code-snippet" />
             <item index="29" class="java.lang.String" itemvalue="md-badge" />
             <item index="30" class="java.lang.String" itemvalue="md-card" />
+            <item index="31" class="java.lang.String" itemvalue="uwp-spinner" />
           </list>
         </value>
       </option>

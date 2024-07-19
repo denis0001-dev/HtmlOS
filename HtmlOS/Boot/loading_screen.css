@@ -21,10 +21,10 @@
             cursor: inherit;
         }
 
-        span#spinner {
+        #spinner {
             margin-top: 100px;
-            font-family: 'Segoe UI Boot Semilight', 'Segoe UI', sans-serif;
-            font-size: larger;
+            /* font-family: 'Segoe UI Boot Semilight', 'Segoe UI', sans-serif;
+            font-size: larger; */
             cursor: inherit;
         }
     }
