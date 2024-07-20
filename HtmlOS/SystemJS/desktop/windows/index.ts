@@ -54,6 +54,9 @@ class Task {
         Task.tasks.delete(this.taskID);
     }
 
+    /* static get(taskID: string): Task | null;
+    static get(taskID: HTMLElement): Task | null; */
+
     static get(taskID: string | HTMLElement): Task | null {
         if (taskID instanceof String || typeof taskID == "string") {
             return Task.tasks.get(taskID as string) || null;
@@ -81,6 +84,34 @@ class WindowTask extends EmptyTask {
         this.taskbarIcon = taskbarIcon;
     }
 }
+
+interface WindowConfig {
+    width: number;
+    height: number;
+    title?: string;
+
+    closeButton?: boolean;
+    maximizeButton?: boolean;
+    minimizeButton?: boolean;
+
+    closeEnabled?: boolean;
+    maximizeEnabled?: boolean;
+    minimizeEnabled?: boolean;
+
+    resizable?: boolean;
+    frameless?: boolean;
+    transparency?: number;
+    taskbarIcon?: boolean;
+
+    icon?: string;
+    content?: HTMLElement | HTMLCollection | string;
+
+    minWidth?: number;
+    minHeight?: number;
+    maxWidth?: number;
+    maxHeight?: number;
+}
+
 
 // noinspection JSUnusedGlobalSymbols
 class DesktopWindow {
@@ -124,11 +155,10 @@ class DesktopWindow {
         }
 
         // Create an icon on the taskbar for the window
-        const task = new WindowTask(this, null);
-        
+        const task: WindowTask = new WindowTask(this, null);
         this.element.id = "window_" + task.taskID;
 
-        const taskIcon = document.createElement("div");
+        const taskIcon: HTMLDivElement = document.createElement("div");
         taskIcon.classList.add("task");
         taskIcon.id = "task-" + task.taskID;
 
@@ -182,7 +212,7 @@ class DesktopWindow {
             this.content = document.createElement("div");
             this.content.classList.add("content");
             this.content.append(...content);
-        } else if (content instanceof String || typeof content == "string") {
+        } else if (content instanceof String || typeof content === "string") {
             this.content = document.createElement("div");
             this.content.classList.add("content");
             this.content.innerHTML = content as string;
@@ -198,12 +228,27 @@ class DesktopWindow {
 
         // Focus
         this.element.addEventListener('click', () => {
-            // const target = e.target;
-            // console.log(target);
-            // TODO click after focus
             this.focus();
-            // if (target === this.element) return;
-            // target.dispatchEvent(new Event("click"));
+        });
+        console.log(this.element.querySelectorAll("iframe"));
+
+        this.element.querySelectorAll("iframe").forEach((item: HTMLIFrameElement) => {
+            console.log(item);
+            item.contentWindow.addEventListener("click", () => {
+                this.focus();
+            });
+            const style: HTMLStyleElement = document.createElement("style");
+            // noinspection CssUnknownTarget
+            style.textContent = `
+            @import url("../../Fonts/Segoe%20UI/stylesheet.css");
+            @import url("../../Cursors/cursors.css");
+            body {
+                font-family: "Segoe UI", sans-serif;
+                cursor: var(--cur-default);
+            }
+            `
+
+            item.contentDocument.head.appendChild(style);
         });
 
         // Hide buttons that don't need to be shown

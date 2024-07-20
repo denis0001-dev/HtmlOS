@@ -213,6 +213,7 @@
     visibility: hidden;
     justify-content: center;
     align-items: center;
+    user-select: none;
 
     .text {
         font-size: 20px;

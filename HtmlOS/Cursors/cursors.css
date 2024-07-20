@@ -1,34 +1,34 @@
 :root {
-    --cur-default: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_arrow.png'), default;
-    --cur-move: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_move.png') 12 12, move;
-    --cur-busy: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy/0.png') 16 16, wait;
+    --cur-default: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_arrow.png'), default;
+    --cur-move: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_move.png') 12 12, move;
+    --cur-busy: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_busy/0.png') 16 16, wait;
     --cur-wait: var(--cur-busy);
-    --cur-unavail: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_unavail.png') 8 8, not-allowed;
-    --cur-pointer: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_link.png') 8 0, pointer;
-    --cur-help: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_helpsel.png'), help;
-    --cur-text: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/ibeam.png') 16 16, text;
+    --cur-unavail: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_unavail.png') 8 8, not-allowed;
+    --cur-pointer: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_link.png') 8 0, pointer;
+    --cur-help: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_helpsel.png'), help;
+    --cur-text: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/ibeam.png') 16 16, text;
 
     /* Up/down resize */
-    --cur-ns-resize: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_ns.png') 5 12, ns-resize;
+    --cur-ns-resize: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_ns.png') 5 12, ns-resize;
     --cur-sn-resize: var(--cur-ns-resize);
     --cur-n-resize: var(--cur-ns-resize);
     --cur-s-resize: var(--cur-ns-resize);
 
     /* Left/right resize */
-    --cur-ew-resize: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_ew.png') 12 5, ew-resize;
+    --cur-ew-resize: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_ew.png') 12 5, ew-resize;
     --cur-we-resize: var(--cur-ew-resize);
     --cur-e-resize: var(--cur-ew-resize);
     --cur-w-resize: var(--cur-ew-resize);
 
     /* Top right - bottom left diagonal resize */
-    --cur-nesw-resize: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_nesw.png') 8 8, nesw-resize;
+    --cur-nesw-resize: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_nesw.png') 8 8, nesw-resize;
     --cur-ne-resize: var(--cur-nesw-resize);
     --cur-sw-resize: var(--cur-nesw-resize);
     --cur-en-resize: var(--cur-nesw-resize);
     --cur-ws-resize: var(--cur-nesw-resize);
     
     /* Top left - bottom right diagonal resize */
-    --cur-nwse-resize: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_nwse.png') 8 8, nwse-resize;
+    --cur-nwse-resize: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_nwse.png') 8 8, nwse-resize;
     --cur-nw-resize: var(--cur-nwse-resize);
     --cur-se-resize: var(--cur-nwse-resize);
     --cur-es-resize: var(--cur-nwse-resize);
@@ -45,74 +45,74 @@ span {
 
 /* @keyframes aero_busy {
     5.88235294117% {
-        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy/0.png') 8 8, wait;
+        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_busy/0.png') 8 8, wait;
     }
 
     11.7647058823% {
-        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy/1.png');
+        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_busy/1.png');
     }
 
     17.6470588235% {
-        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy/2.png');
+        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_busy/2.png');
     }
 
     23.5294117647% {
-        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy/3.png');
+        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_busy/3.png');
     }
 
     29.4117647059% {
-        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy/4.png');
+        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_busy/4.png');
     }
 
     35.2941176471% {
-        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy/5.png');
+        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_busy/5.png');
     }
 
     41.1764705882% {
-        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy/6.png');
+        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_busy/6.png');
     }
 
     47.0588235294% {
-        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy/7.png');
+        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_busy/7.png');
     }
 
     52.9411764706% {
-        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy/8.png');
+        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_busy/8.png');
     }
 
     58.8235294118% {
-        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy/9.png');
+        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_busy/9.png');
     }
 
     64.7058823529% {
-        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy/10.png');
+        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_busy/10.png');
     }
 
     70.5882352941% {
-        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy/11.png');
+        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_busy/11.png');
     }
 
     76.4705882353% {
-        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy/12.png');
+        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_busy/12.png');
     }
 
     82.3529411765% {
-        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy/13.png');
+        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_busy/13.png');
     }
 
     88.235294117% {
-        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy/14.png');
+        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_busy/14.png');
     }
 
     94.1176470588% {
-        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy/15.png');
+        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_busy/15.png');
     }
 
     99.9999999999% {
-        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy/16.png');
+        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_busy/16.png');
     }
 
     100% {
-        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/cursors/aero_busy/17.png');
+        cursor: url('https://raw.githubusercontent.com/denis0001-dev/HtmlOS/main/HtmlOS/Cursors/aero_busy/17.png');
     }
 } */
