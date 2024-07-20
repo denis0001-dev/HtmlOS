@@ -33,6 +33,7 @@ async function boot() {
     }
     // Animation cache
     init_cache();
+    onbeforeunload = () => "";
     // Loading screen
     const loading_screen = new LoadingScreen(document.getElementById("loading_screen"));
     loading_screen.start();

@@ -39,6 +39,8 @@ async function boot(): Promise<void> {
     // Animation cache
     init_cache();
 
+    onbeforeunload = () => "";
+
     // Loading screen
     const loading_screen: LoadingScreen = new LoadingScreen((document.getElementById("loading_screen") as HTMLDivElement));
     loading_screen.start();

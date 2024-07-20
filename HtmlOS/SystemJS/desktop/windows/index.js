@@ -36,6 +36,8 @@ class Task {
     finish() {
         Task.tasks.delete(this.taskID);
     }
+    /* static get(taskID: string): Task | null;
+    static get(taskID: HTMLElement): Task | null; */
     static get(taskID) {
         if (taskID instanceof String || typeof taskID == "string") {
             return Task.tasks.get(taskID) || null;
@@ -142,7 +144,7 @@ class DesktopWindow {
             this.content.classList.add("content");
             this.content.append(...content);
         }
-        else if (content instanceof String || typeof content == "string") {
+        else if (content instanceof String || typeof content === "string") {
             this.content = document.createElement("div");
             this.content.classList.add("content");
             this.content.innerHTML = content;
@@ -159,12 +161,25 @@ class DesktopWindow {
         }
         // Focus
         this.element.addEventListener('click', () => {
-            // const target = e.target;
-            // console.log(target);
-            // TODO click after focus
             this.focus();
-            // if (target === this.element) return;
-            // target.dispatchEvent(new Event("click"));
+        });
+        console.log(this.element.querySelectorAll("iframe"));
+        this.element.querySelectorAll("iframe").forEach((item) => {
+            console.log(item);
+            item.contentWindow.addEventListener("click", () => {
+                this.focus();
+            });
+            const style = document.createElement("style");
+            // noinspection CssUnknownTarget
+            style.textContent = `
+            @import url("../../Fonts/Segoe%20UI/stylesheet.css");
+            @import url("../../Cursors/cursors.css");
+            body {
+                font-family: "Segoe UI", sans-serif;
+                cursor: var(--cur-default);
+            }
+            `;
+            item.contentDocument.head.appendChild(style);
         });
         // Hide buttons that don't need to be shown
         if (!closeButton)
