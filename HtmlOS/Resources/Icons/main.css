@@ -44,6 +44,10 @@
     background-image: url('../../Resources/Icons/question.ico');
 }
 
+.icon_img[data-type="checkmark"] {
+    background-image: url('../../Resources/Icons/checkmark.png');
+}
+
 /* Apps */
 .icon_img[data-type="command_prompt"], .icon_img[data-type="cmd"] {
     background-image: url("../../SystemJS/cmd/icon.ico");

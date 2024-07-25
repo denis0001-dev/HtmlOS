@@ -1,0 +1,7 @@
+:host div.separator {
+    display: block;
+    margin: 2px 8px 2px 8px;
+    box-sizing: border-box;
+    height: 1px;
+    background-color: #919191;
+}

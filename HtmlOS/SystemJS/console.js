@@ -1,3 +1,7 @@
+// noinspection JSUnusedLocalSymbols
+var ErrorDialog = desktop.ErrorDialog;
+var OKAction = desktop.OKAction;
+var notification = desktop.notification;
 addEventListener("booted", () => {
     const log = console.log;
     const warn = console.warn;
@@ -15,6 +19,6 @@ addEventListener("booted", () => {
     };
     console.warn = (...data) => {
         warn(...data);
-        notification("warning", "Warning", data.join(" "), createActions());
+        notification("warning", "Warning", data.join(" "), []);
     };
 });

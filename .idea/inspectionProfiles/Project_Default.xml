@@ -33,7 +33,7 @@
     <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="32">
+          <list size="37">
             <item index="0" class="java.lang.String" itemvalue="nobr" />
             <item index="1" class="java.lang.String" itemvalue="noembed" />
             <item index="2" class="java.lang.String" itemvalue="comment" />
@@ -66,6 +66,11 @@
             <item index="29" class="java.lang.String" itemvalue="md-badge" />
             <item index="30" class="java.lang.String" itemvalue="md-card" />
             <item index="31" class="java.lang.String" itemvalue="uwp-spinner" />
+            <item index="32" class="java.lang.String" itemvalue="menu-item" />
+            <item index="33" class="java.lang.String" itemvalue="separator" />
+            <item index="34" class="java.lang.String" itemvalue="menu-separator" />
+            <item index="35" class="java.lang.String" itemvalue="context-menu" />
+            <item index="36" class="java.lang.String" itemvalue="cascading-menu" />
           </list>
         </value>
       </option>

@@ -19,15 +19,18 @@ body {
         width: 100%;
         display: flex;
         flex-direction: row;
+        cursor: var(--cur-default);
 
         #caret {
             /* content: "_"; */
             animation: blink 1s steps(1, end) infinite;
             user-select: none;
+            cursor: inherit;
         }
 
         span {
             white-space: pre;
+            cursor: var(--cur-text);
         }
     }
 }

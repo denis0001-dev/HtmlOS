@@ -65,6 +65,8 @@
         }
     }
 
+    /*noinspection ALL*/
+
     .actions {
         display: flex;
         height: 36px;
@@ -90,11 +92,13 @@
     }
 }
 
+/*noinspection ALL*/
 #main > #notification.appear {
     animation: appear_from_right 0.5s;
     animation-fill-mode: forwards;
 }
 
+/*noinspection ALL*/
 #main > #notification.disappear {
     animation: disappear_from_right 0.5s;
     animation-fill-mode: forwards;

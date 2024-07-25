@@ -1,20 +1,25 @@
-class LoadingScreen {
-    public readonly element: HTMLDivElement;
-    public readonly spinner: UWPSpinner;
+/// <reference path="index.ts" />
+import UWPSpinner = UI.UWPSpinner;
 
-    constructor(element: HTMLDivElement) {
-        this.element = element;
-        this.spinner = this.element.querySelector('#spinner');
-        element.style.visibility = "hidden";
-    }
+namespace system {
+    export class LoadingScreen {
+        public readonly element: HTMLDivElement;
+        public readonly spinner: UWPSpinner;
 
-    start(): void {
-        this.element.style.visibility = "visible";
-        this.spinner.start();
-    }
+        constructor(element: HTMLDivElement) {
+            this.element = element;
+            this.spinner = this.element.querySelector('#spinner');
+            element.style.visibility = "hidden";
+        }
 
-    stop(): void {
-        this.element.style.visibility = "hidden";
-        this.spinner.stop();
+        start(): void {
+            this.element.style.visibility = "visible";
+            this.spinner.start();
+        }
+
+        stop(): void {
+            this.element.style.visibility = "hidden";
+            this.spinner.stop();
+        }
     }
 }

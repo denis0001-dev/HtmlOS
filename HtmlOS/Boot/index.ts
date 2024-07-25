@@ -1,83 +1,129 @@
-var cookiesAccepted: boolean = false;
-var desktop: Desktop;
+/// <reference path="../SystemJS/desktop/windows/index.ts" />
 
-async function boot(): Promise<void> {
-    // FIXME make this work
-    // Change all cursors to their custom value
-    for (let i = 0; i < document.styleSheets.length; i++) {
-        let styleSheet: CSSStyleSheet = document.styleSheets[i];
+namespace system {
+    import Desktop = desktop.Desktop;
+    import createIcon = desktop.createIcon;
 
-        var styleSheetText: string;
-        try {
-            styleSheetText = Array.from(styleSheet.cssRules).map(rule => rule.cssText).join(' ');
-        } catch (ignore) {
-            continue;
+    import WarningDialog = desktop.WarningDialog;
+    import delay = utils.delay;
+    import CommandLine = apps.CommandLine;
+    import Action = desktop.Action;
+    import cookies = utils.cookies;
+    import ContextMenuBuilder = UI.ContextMenuBuilder;
+
+    export var cookiesAccepted: boolean = false;
+
+    var booted = false;
+    // noinspection JSUnusedGlobalSymbols
+    export async function boot(): Promise<void> {
+        if (booted) {
+            throw new Error("System is already booted");
+        }
+        booted = true;
+
+        // FIXME make this work
+        // Change all cursors to their custom value
+        for (let i = 0; i < document.styleSheets.length; i++) {
+            let styleSheet: CSSStyleSheet = document.styleSheets[i];
+
+            var styleSheetText: string;
+            try {
+                styleSheetText = Array.from(styleSheet.cssRules).map(rule => rule.cssText).join(' ');
+            } catch (ignore) {
+                continue;
+            }
+
+            if (styleSheetText === undefined) {
+                continue;
+            }
+
+            const c: string = "cursor: ";
+
+            // Cursor mappings
+            styleSheetText.replace(c+"default", "var(--cur-default)");
+            styleSheetText.replace(c+"pointer", "var(--cur-pointer)");
+            styleSheetText.replace(c+"move", "var(--cur-move)");
+            styleSheetText.replace(c+"help", "var(--cur-help)");
+            styleSheetText.replace(c+"not-allowed", "var(--cur-unavail)");
+            styleSheetText.replace(c+"n-resize", "var(--cur-n-resize)");
+            styleSheetText.replace(c+"s-resize", "var(--cur-s-resize)");
+            styleSheetText.replace(c+"e-resize", "var(--cur-e-resize)");
+            styleSheetText.replace(c+"w-resize", "var(--cur-w-resize)");
+            styleSheetText.replace(c+"ns-resize", "var(--cur-ns-resize)");
+            styleSheetText.replace(c+"ew-resize", "var(--cur-ew-resize)");
+            styleSheetText.replace(c+"nesw-resize", "var(--cur-nesw-resize)");
+            styleSheetText.replace(c+"nwse-resize", "var(--cur-nwse-resize)");
         }
 
-        if (styleSheetText === undefined) {
-            continue;
+        // Animation cache
+        init_cache();
+
+        onbeforeunload = () => "";
+
+        // Loading screen
+        const loading_screen: LoadingScreen = new LoadingScreen((document.getElementById("loading_screen") as HTMLDivElement));
+        loading_screen.start();
+        await delay(5000);
+
+        loading_screen.spinner.stop();
+        await delay(1000);
+
+        loading_screen.stop();
+
+        // Generate desktop
+        desktop.currentDesktop = new Desktop((document.getElementById("main") as HTMLDivElement));
+        desktop.currentDesktop.placeIcon(createIcon("Trash", "trash_empty"), 0, 0);
+        dispatchEvent(new Event("booted"));
+
+        let builder = new ContextMenuBuilder();
+        builder.addNormalItem("none", "Reboot", reboot);
+        builder.addNormalItem("none", "Shutdown", shutdown);
+        builder.addSeparator();
+        builder.addNormalItem("cmd", "Command Prompt", () => {
+            new CommandLine(800, 600).show();
+        });
+
+        UI.attachContextMenu(document.getElementById("desktop"), builder);
+
+        // Cookies warning
+        const cookies_window: WarningDialog = new WarningDialog("Cookies Warning", 600, 200,
+            `This website uses cookies to remember your settings 
+            and improve your experience. Click 'OK' to continue.`, [
+                new Action("OK", () => {cookiesAccepted = true; document.cookie = "cookiesAccepted=true"; notification("info", "Cookie Manager", "Cookies accepted.", [])}),
+                new Action("Decline cookies", () => {cookiesAccepted = false; notification("error", "Cookie Manager", "Cookies rejected.", [])})
+            ]
+        );
+
+        cookies_window.minHeight = 175;
+        cookies_window.minWidth = 325;
+
+        if (!cookies.get("cookiesAccepted") === true) {
+            setTimeout(() => {cookies_window.show()}, 3000);
+        } else {
+            cookies_window.close();
         }
 
-        const c: string = "cursor: ";
+        // Test window
+        const content = document.createElement("div");
+        content.classList.add("content");
+        content.innerHTML = `
+            Just a little testing window.
+            <br/>
+            Right click to see something!
+        `;
 
-        // Cursor mappings
-        styleSheetText.replace(c+"default", "var(--cur-default)");
-        styleSheetText.replace(c+"pointer", "var(--cur-pointer)");
-        styleSheetText.replace(c+"move", "var(--cur-move)");
-        styleSheetText.replace(c+"help", "var(--cur-help)");
-        styleSheetText.replace(c+"not-allowed", "var(--cur-unavail)");
-        styleSheetText.replace(c+"n-resize", "var(--cur-n-resize)");
-        styleSheetText.replace(c+"s-resize", "var(--cur-s-resize)");
-        styleSheetText.replace(c+"e-resize", "var(--cur-e-resize)");
-        styleSheetText.replace(c+"w-resize", "var(--cur-w-resize)");
-        styleSheetText.replace(c+"ns-resize", "var(--cur-ns-resize)");
-        styleSheetText.replace(c+"ew-resize", "var(--cur-ew-resize)");
-        styleSheetText.replace(c+"nesw-resize", "var(--cur-nesw-resize)");
-        styleSheetText.replace(c+"nwse-resize", "var(--cur-nwse-resize)");
+        builder = new UI.ContextMenuBuilder();
+        builder.addSeparator();
+        let builder2 = new UI.ContextMenuBuilder();
+        builder2.addNormalItem("warning", "lol");
+        builder2.addSeparator();
+        builder.addCascadingMenu("error", "Cascading menuuu", builder2);
+        UI.attachContextMenu(content, builder);
+
+        const window: desktop.Window = new desktop.Window({title: "test", width: 500, height: 300, content: content});
+        window.show();
+
+        const commandLine: CommandLine = new CommandLine(800, 600);
+        commandLine.show();
     }
-
-    // Animation cache
-    init_cache();
-
-    onbeforeunload = () => "";
-
-    // Loading screen
-    const loading_screen: LoadingScreen = new LoadingScreen((document.getElementById("loading_screen") as HTMLDivElement));
-    loading_screen.start();
-    await delay(5000);
-
-    loading_screen.spinner.stop();
-    await delay(1000);
-
-    loading_screen.stop();
-
-    // Generate desktop
-    desktop = new Desktop((document.getElementById("main") as HTMLDivElement));
-    desktop.placeIcon(createIcon("Trash", "trash_empty"), 0, 0);
-    dispatchEvent(new Event("booted"));
-
-    // Cookies warning
-    const cookies_window: IconTextDialog = new IconTextDialog("Cookies Warning", 600, 200,
-        `This website uses cookies to remember your settings 
-        and improve your experience. Click 'OK' to continue.`, [
-            new Action("OK", () => {cookiesAccepted = true; document.cookie = "cookiesAccepted=true"; notification("info", "Cookie Manager", "Cookies accepted.", createActions())}),
-            new Action("Decline cookies", () => {cookiesAccepted = false; notification("error", "Cookie Manager", "Cookies rejected.", createActions())})
-        ],  "warning"
-    );
-
-    cookies_window.minHeight = 175;
-    cookies_window.minWidth = 325;
-
-    if (!document.cookie.split(";").includes("cookiesAccepted=true")) {
-        setTimeout(() => {cookies_window.show()}, 3000);
-    } else {
-        cookies_window.close();
-    }
-
-    // Test window
-    const window: DesktopWindow = new DesktopWindow("test", 500, 300, true, true, true, "application");
-    window.show();
-
-    const commandLine = new CommandLine(800, 600);
-    commandLine.show();
 }

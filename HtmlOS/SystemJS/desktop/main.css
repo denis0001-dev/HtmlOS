@@ -1,3 +1,5 @@
+/*noinspection CssUnusedSymbol*/
+
 :root {
     --uwp-ui-dark-color: rgba(16, 16, 16, 0.9);
     --uwp-ui-blur: blur(50px);
@@ -8,6 +10,8 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+
+/*noinspection CssUnusedSymbol*/
 #main {
     visibility: hidden;
     display: flex;
@@ -51,6 +55,8 @@
                 gap: 3px;
                 height: inherit;
                 width: auto;
+
+                /*noinspection CssUnusedSymbol*/
 
                 .task {
                     display: flex;
