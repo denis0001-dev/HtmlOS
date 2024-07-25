@@ -9,11 +9,5 @@
     "HtmlOS/Library/**/*.ts",
     "HtmlOS/SystemJS/**/*.ts",
     "HtmlOS/SystemJS/cmd/**/*.ts",
-    "HtmlOS/SystemJS/desktop/index.js",
-    "HtmlOS/Library/style_cache.js",
-    "HtmlOS/Library/utils.js",
-    "HtmlOS/Boot/loading_screen.js",
-    "HtmlOS/SystemJS/desktop/windows/index.js",
-    "HtmlOS/SystemJS/desktop/notifications/index.js"
   ]
 }

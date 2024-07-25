@@ -2,6 +2,8 @@
     position: relative;
     z-index: 2;
 
+    /*noinspection CssUnusedSymbol*/
+
     > .window {
         position: absolute;
         background-color: white;
@@ -190,6 +192,8 @@
             }
         }
 
+        /*noinspection CssUnusedSymbol*/
+
         > .content.icon_text_dialog {
             display: flex;
             align-items: center;
@@ -204,11 +208,15 @@
                 flex: 1 0 64px;
             }
 
+            /*noinspection CssUnusedSymbol*/
+
             .message {
                 padding-left: 20px;
                 padding-right: 10px;
                 flex: 0 1 auto;
             }
+
+            /*noinspection CssUnusedSymbol*/
 
             .actions {
                 position: absolute;
@@ -221,6 +229,8 @@
                 align-items: center;
                 flex-direction: row;
 
+                /*noinspection CssUnusedSymbol*/
+
                 button.action {
                     height: 25px;
                     width: auto;
@@ -231,11 +241,15 @@
                     outline: none;
                 }
 
+                /*noinspection CssUnusedSymbol*/
+
                 button.action:focus, button.action:focus-visible, button.action:focus-within {
                     outline: none;
                     border-color: #0068d7;
                     border-width: 2px;
                 }
+
+                /*noinspection CssUnusedSymbol*/
 
                 button.action:hover {
                     outline: black dashed 1px;
@@ -251,10 +265,14 @@
     }
 
     /* Close & open animations */
+    /*noinspection CssUnusedSymbol*/
+
     > .window.closing {
         animation: close 0.25s;
         animation-fill-mode: forwards;
     }
+
+    /*noinspection CssUnusedSymbol*/
 
     > .window.opening {
         animation: open 0.25s;

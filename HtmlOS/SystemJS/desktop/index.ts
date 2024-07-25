@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /* function desktop(element) {
     element.style.visibility = "visible";
 
@@ -31,136 +33,145 @@
     }
 } */
 
-class Desktop {
-    public readonly element: HTMLDivElement;
+namespace desktop {
+    import getChildByClass = utils.html.getChildByClass;
+    import nextElementIndex = utils.nextElementIndex;
+    import closeDragElement = utils.html.closeDragElement;
+    import delay = utils.delay;
+    export var currentDesktop: Desktop;
 
-    constructor(element: HTMLDivElement) {
-        this.element = element;
-        element.style.visibility = "visible";
+    // noinspection DuplicatedCode
+    export class Desktop {
+        public readonly element: HTMLDivElement;
 
-        window.addEventListener('resize', () => {
-            console.log("Resizing...");
+        constructor(element: HTMLDivElement) {
+            this.element = element;
+            element.style.visibility = "visible";
+
+            window.addEventListener('resize', () => {
+                console.log("Resizing...");
+                this.createBlankIcons();
+            })
+
+            this.element.querySelector("#taskbar > .left > #start").addEventListener("click", () => {
+                this.toggle_startmenu();
+            })
+            this.#startmenu_drag_top();
+            this.#startmenu_drag_top_right();
+            this.#startmenu_drag_right();
+
+            this.wallpaper_path = "HtmlOS/Resources/Wallpapers/windows10_dark.png";
+
             this.createBlankIcons();
-        })
+        }
 
-        this.element.querySelector("#taskbar > .left > #start").addEventListener("click", () => {
-            this.toggle_startmenu();
-        })
-        this.#startmenu_drag_top();
-        this.#startmenu_drag_top_right();
-        this.#startmenu_drag_right();
+        get #wallpaper(): HTMLDivElement {
+            return this.element.querySelector("#desktop > #wallpaper");
+        }
 
-        this.wallpaper_path = "HtmlOS/Resources/Wallpapers/windows10_dark.png";
+        get #icon_grid() : HTMLDivElement {
+            return this.element.querySelector("#desktop > #icons");
+        }
 
-        this.createBlankIcons();
-    }
+        // noinspection JSUnusedGlobalSymbols
+        get wallpaper_path(): string {
+            const regex = /url\("(.*)"\)/
 
-    get #wallpaper(): HTMLDivElement {
-        return this.element.querySelector("#desktop > #wallpaper");
-    }
+            return this.#wallpaper.style.backgroundImage.replace(regex, "$1");
+        }
 
-    get #icon_grid() : HTMLDivElement {
-        return this.element.querySelector("#desktop > #icons");
-    }
+        set wallpaper_path(path: string) {
+            this.#wallpaper.style.backgroundImage = 'url("' + path + '")';
+        }
 
-    get wallpaper_path(): string {
-        const regex = /url\("(.*)"\)/
-        
-        return this.#wallpaper.style.backgroundImage.replace(regex, "$1");
-    }
+        createBlankIcons(): void {
+            const rows: string[] = getComputedStyle(this.#icon_grid).gridTemplateRows.split(" ");
+            const cols: string[] = getComputedStyle(this.#icon_grid).gridTemplateColumns.split(" ");
 
-    set wallpaper_path(path: string) {
-        this.#wallpaper.style.backgroundImage = 'url("' + path + '")';
-    }
-    
-    createBlankIcons(): void {
-        const rows: string[] = getComputedStyle(this.#icon_grid).gridTemplateRows.split(" ");
-        const cols: string[] = getComputedStyle(this.#icon_grid).gridTemplateColumns.split(" ");
+            const icons: HTMLDivElement[] = Array.from(this.#icon_grid.children) as HTMLDivElement[];
 
-        const icons: HTMLDivElement[] = Array.from(this.#icon_grid.children) as HTMLDivElement[];
-
-        icons.forEach((item: HTMLDivElement): void => {
-            if (item.dataset.type === "none") {
-                item.remove();
-            }
-        });
-
-
-
-        for (let col: number = 0; col < cols.length; col++) {
-            for (let row: number = 0; row < rows.length; row++) {
-                if (this.getIcon(row, col) !== null) {
-                    continue;
+            icons.forEach((item: HTMLDivElement): void => {
+                if (item.dataset.type === "none") {
+                    item.remove();
                 }
+            });
 
-                var icon: HTMLDivElement = document.createElement("div");
-                icon.classList.add("icon");
-                icon.id = "icon_r"+row+"c"+col;
-                icon.dataset.type = "none";
-                var iconImg: HTMLDivElement = document.createElement("div");
-                iconImg.classList.add("icon_img");
-                iconImg.classList.add("hidden");
-                iconImg.dataset.type = "none";
-                var iconName: HTMLDivElement = document.createElement("div");
-                iconName.classList.add("icon_name");
-                iconName.innerHTML = "None";
-                icon.appendChild(iconImg);
-                icon.appendChild(iconName);
 
-                this.#icon_grid.appendChild(icon);
+
+            for (let col: number = 0; col < cols.length; col++) {
+                for (let row: number = 0; row < rows.length; row++) {
+                    if (this.getIcon(row, col) !== null) {
+                        continue;
+                    }
+
+                    var icon: HTMLDivElement = document.createElement("div");
+                    icon.classList.add("icon");
+                    icon.id = "icon_r"+row+"c"+col;
+                    icon.dataset.type = "none";
+                    var iconImg: HTMLDivElement = document.createElement("div");
+                    iconImg.classList.add("icon_img");
+                    iconImg.classList.add("hidden");
+                    iconImg.dataset.type = "none";
+                    var iconName: HTMLDivElement = document.createElement("div");
+                    iconName.classList.add("icon_name");
+                    iconName.innerHTML = "None";
+                    icon.appendChild(iconImg);
+                    icon.appendChild(iconName);
+
+                    this.#icon_grid.appendChild(icon);
+                }
             }
         }
-    }
 
-    getIcon(row: number, col: number): HTMLDivElement {
-        return this.#icon_grid.querySelector("#icon_r"+row+"c"+col);
-    }
-
-    placeIcon(_icon: HTMLDivElement, row: number, col: number): void {
-        const icon: HTMLDivElement = document.createElement("div");
-        icon.classList.add("icon");
-        icon.id = "icon_r"+row+"c"+col;
-        icon.dataset.type = _icon.dataset.type || "none";
-
-        const iconName: HTMLDivElement = document.createElement("div");
-        iconName.classList.add("icon_name");
-        iconName.innerHTML = getChildByClass(_icon, "icon_name").innerHTML;
-
-        const iconImg: HTMLDivElement = document.createElement("div");
-        iconImg.classList.add("icon_img");
-        iconImg.dataset.type = _icon.dataset.type || "none";
-        iconImg.style.backgroundImage = getChildByClass(_icon, "icon_img").style.backgroundImage;
-
-        const icon_pos: HTMLDivElement = this.getIcon(row, col);
-
-        icon.appendChild(iconImg);
-        icon.appendChild(iconName);
-
-        var nextElIndex: number = nextElementIndex(Array.from(this.#icon_grid.children), icon_pos);
-
-        icon_pos.remove();
-
-        if (nextElIndex === this.#icon_grid.children.length - 1) {
-            this.#icon_grid.appendChild(icon);
-        } else {
-            this.#icon_grid.insertBefore(icon, this.#icon_grid.children[nextElIndex - 1]);
+        getIcon(row: number, col: number): HTMLDivElement {
+            return this.#icon_grid.querySelector("#icon_r"+row+"c"+col);
         }
-    }
 
-    get start_menu(): HTMLDivElement {
-        return this.element.querySelector("#start_menu");
-    }
+        placeIcon(_icon: HTMLDivElement, row: number, col: number): void {
+            const icon: HTMLDivElement = document.createElement("div");
+            icon.classList.add("icon");
+            icon.id = "icon_r"+row+"c"+col;
+            icon.dataset.type = _icon.dataset.type || "none";
 
-    minimize_startmenu(): void {
-        if (this.start_menu.style.transform === "") return;
-        const height: number = this.start_menu.clientHeight + 45;
+            const iconName: HTMLDivElement = document.createElement("div");
+            iconName.classList.add("icon_name");
+            iconName.innerHTML = getChildByClass(_icon, "icon_name").innerHTML;
 
-        this.start_menu.style.transform = `translateY(${height}px)`
-    }
+            const iconImg: HTMLDivElement = document.createElement("div");
+            iconImg.classList.add("icon_img");
+            iconImg.dataset.type = _icon.dataset.type || "none";
+            iconImg.style.backgroundImage = getChildByClass(_icon, "icon_img").style.backgroundImage;
 
-    async maximize_startmenu(): Promise<void> {
-        stylesheet.replaceChildren(
-            `@keyframes startmenu {
+            const icon_pos: HTMLDivElement = this.getIcon(row, col);
+
+            icon.appendChild(iconImg);
+            icon.appendChild(iconName);
+
+            var nextElIndex: number = nextElementIndex(Array.from(this.#icon_grid.children), icon_pos);
+
+            icon_pos.remove();
+
+            if (nextElIndex === this.#icon_grid.children.length - 1) {
+                this.#icon_grid.appendChild(icon);
+            } else {
+                this.#icon_grid.insertBefore(icon, this.#icon_grid.children[nextElIndex - 1]);
+            }
+        }
+
+        get start_menu(): HTMLDivElement {
+            return this.element.querySelector("#start_menu");
+        }
+
+        minimize_startmenu(): void {
+            if (this.start_menu.style.transform === "") return;
+            const height: number = this.start_menu.clientHeight + 45;
+
+            this.start_menu.style.transform = `translateY(${height}px)`
+        }
+
+        async maximize_startmenu(): Promise<void> {
+            stylesheet.replaceChildren(
+                `@keyframes startmenu {
                 0% {
                     transform: translateY(${this.element.clientHeight + 5}px);
                 }
@@ -174,149 +185,150 @@ class Desktop {
                 }
             }
             `
-        );
+            );
 
-        this.start_menu.style.animation = "startmenu 0.5s";
-        this.start_menu.style.animationFillMode = "forwards";
+            this.start_menu.style.animation = "startmenu 0.5s";
+            this.start_menu.style.animationFillMode = "forwards";
 
-        await delay(500);
-        this.start_menu.style.animation = "";
-        this.start_menu.style.transform = "translateY(0px)";
-    }
+            await delay(500);
+            this.start_menu.style.animation = "";
+            this.start_menu.style.transform = "translateY(0px)";
+        }
 
-    async toggle_startmenu(): Promise<void> {
-        if (this.start_menu.style.transform === "translateY(0px)") {
-            this.minimize_startmenu();
-        } else {
-            this.maximize_startmenu();
+        async toggle_startmenu(): Promise<void> {
+            if (this.start_menu.style.transform === "translateY(0px)") {
+                this.minimize_startmenu();
+            } else {
+                this.maximize_startmenu();
+            }
+        }
+
+        #startmenu_drag_top(): void {
+            var pos1: number, pos2: number, pos3: number, pos4: number = 0;
+
+            const obj = this;
+
+            obj.start_menu.querySelector('.resizer_up').addEventListener("mousedown", (e: MouseEvent) => {
+                dragMouseDown(e);
+            });
+
+
+            function dragMouseDown(e: MouseEvent) {
+                e.preventDefault();
+
+                // get the mouse cursor position at startup:
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                // call a function whenever the cursor moves:
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e: MouseEvent) {
+                e.preventDefault();
+
+                // calculate the new cursor position:
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+
+                obj.start_menu.style.height = (obj.start_menu.clientHeight + pos2) + "px";
+            }
+        }
+
+        #startmenu_drag_top_right(): void {
+            var pos1: number = 0;
+            var pos2: number = 0;
+            var pos3: number = 0;
+            var pos4: number = 0;
+
+            const obj = this;
+
+            obj.start_menu.querySelector('.resizer_up_right').addEventListener("mousedown", (e: MouseEvent) => {
+                dragMouseDown(e);
+            });
+
+
+            function dragMouseDown(e: MouseEvent) {
+                e.preventDefault();
+
+                // get the mouse cursor position at startup:
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                // call a function whenever the cursor moves:
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e: MouseEvent) {
+                e.preventDefault();
+
+                // calculate the new cursor position:
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+
+                obj.start_menu.style.height = (obj.start_menu.clientHeight + pos2) + "px";
+                obj.start_menu.style.width = (obj.start_menu.clientWidth - pos1) + "px";
+            }
+        }
+
+        #startmenu_drag_right(): void {
+            var pos1: number = 0;
+            var pos2: number = 0;
+            var pos3: number = 0;
+            var pos4: number = 0;
+
+            const obj = this;
+
+            obj.start_menu.querySelector('.resizer_right').addEventListener("mousedown", (e: MouseEvent) => {
+                dragMouseDown(e);
+            });
+
+
+            function dragMouseDown(e: MouseEvent) {
+                e.preventDefault();
+
+                // get the mouse cursor position at startup:
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                // call a function whenever the cursor moves:
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e: MouseEvent) {
+                e.preventDefault();
+
+                // calculate the new cursor position:
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+
+                obj.start_menu.style.width = (obj.start_menu.clientWidth - pos1) + "px";
+            }
         }
     }
 
-    #startmenu_drag_top(): void {
-        var pos1: number, pos2: number, pos3: number, pos4: number = 0;
+    export function createIcon(name: string, type: string): HTMLDivElement {
+        const icon: HTMLDivElement = document.createElement("div");
+        icon.classList.add("icon");
+        icon.dataset.type = type || "none";
 
-        const obj = this;
+        var iconImg: HTMLDivElement = document.createElement("div");
+        iconImg.classList.add("icon_img");
+        iconImg.dataset.type = type || "none";
 
-        obj.start_menu.querySelector('.resizer_up').addEventListener("mousedown", (e: MouseEvent) => {
-            dragMouseDown(e);
-        });
+        var iconName: HTMLDivElement = document.createElement("div");
+        iconName.classList.add("icon_name");
+        iconName.innerHTML = name;
 
+        icon.appendChild(iconImg);
+        icon.appendChild(iconName);
 
-        function dragMouseDown(e: MouseEvent) {
-            e.preventDefault();
-        
-            // get the mouse cursor position at startup:
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            document.onmouseup = closeDragElement;
-            // call a function whenever the cursor moves:
-            document.onmousemove = elementDrag;
-        }
-        
-        function elementDrag(e: MouseEvent) {
-            e.preventDefault();
-        
-            // calculate the new cursor position:
-            pos1 = pos3 - e.clientX;
-            pos2 = pos4 - e.clientY;
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-
-            obj.start_menu.style.height = (obj.start_menu.clientHeight + pos2) + "px";
-        }
+        return icon;
     }
-
-    #startmenu_drag_top_right(): void {
-        var pos1: number = 0;
-        var pos2: number = 0;
-        var pos3: number = 0;
-        var pos4: number = 0;
-
-        const obj = this;
-
-        obj.start_menu.querySelector('.resizer_up_right').addEventListener("mousedown", (e: MouseEvent) => {
-            dragMouseDown(e);
-        });
-
-
-        function dragMouseDown(e: MouseEvent) {
-            e.preventDefault();
-        
-            // get the mouse cursor position at startup:
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            document.onmouseup = closeDragElement;
-            // call a function whenever the cursor moves:
-            document.onmousemove = elementDrag;
-        }
-        
-        function elementDrag(e: MouseEvent) {
-            e.preventDefault();
-        
-            // calculate the new cursor position:
-            pos1 = pos3 - e.clientX;
-            pos2 = pos4 - e.clientY;
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-
-            obj.start_menu.style.height = (obj.start_menu.clientHeight + pos2) + "px";
-            obj.start_menu.style.width = (obj.start_menu.clientWidth - pos1) + "px";
-        }
-    }
-
-    #startmenu_drag_right(): void {
-        var pos1: number = 0;
-        var pos2: number = 0;
-        var pos3: number = 0;
-        var pos4: number = 0;
-
-        const obj = this;
-
-        obj.start_menu.querySelector('.resizer_right').addEventListener("mousedown", (e: MouseEvent) => {
-            dragMouseDown(e);
-        });
-
-
-        function dragMouseDown(e: MouseEvent) {
-            e.preventDefault();
-        
-            // get the mouse cursor position at startup:
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            document.onmouseup = closeDragElement;
-            // call a function whenever the cursor moves:
-            document.onmousemove = elementDrag;
-        }
-        
-        function elementDrag(e: MouseEvent) {
-            e.preventDefault();
-        
-            // calculate the new cursor position:
-            pos1 = pos3 - e.clientX;
-            pos2 = pos4 - e.clientY;
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-
-            obj.start_menu.style.width = (obj.start_menu.clientWidth - pos1) + "px";
-        }
-    }
-}
-
-function createIcon(name: string, type: string): HTMLDivElement {
-    const icon: HTMLDivElement = document.createElement("div");
-    icon.classList.add("icon");
-    icon.dataset.type = type || "none";
-
-    var iconImg: HTMLDivElement = document.createElement("div");
-    iconImg.classList.add("icon_img");
-    iconImg.dataset.type = type || "none";
-
-    var iconName: HTMLDivElement = document.createElement("div");
-    iconName.classList.add("icon_name");
-    iconName.innerHTML = name;
-
-    icon.appendChild(iconImg);
-    icon.appendChild(iconName);
-
-    return icon;
 }

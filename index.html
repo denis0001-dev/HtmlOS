@@ -26,14 +26,14 @@
         <link rel="stylesheet" href="HtmlOS/SystemJS/desktop/notifications/main.css" />
         <link rel="stylesheet" href="HtmlOS/Cursors/cursors.css" />
         <link rel="stylesheet" href="HtmlOS/Resources/Icons/main.css" />
+        <link rel="stylesheet" href="HtmlOS/SystemJS/UI/context-menu.css" />
 
-        <!-- Boot -->
-        <script src="HtmlOS/Boot/index.js"></script>
-        <script src="HtmlOS/Boot/loading_screen.js"></script>
         <!-- Library -->
         <script src="HtmlOS/Library/style_cache.js"></script>
         <script src="HtmlOS/Library/utils.js"></script>
         <script src="HtmlOS/Library/anti-rightclick.js"></script>
+        <!-- UI library -->
+        <script src="HtmlOS/SystemJS/UI/index.js"></script>
         <!-- Desktop -->
         <script src="HtmlOS/SystemJS/desktop/index.js"></script>
         <script src="HtmlOS/SystemJS/desktop/windows/index.js"></script>
@@ -41,10 +41,11 @@
         <!-- Apps -->
         <script src="HtmlOS/SystemJS/apps.js"></script>
         <script src="HtmlOS/SystemJS/shutdown/index.js"></script>
+        <!-- Boot -->
+        <script src="HtmlOS/Boot/index.js"></script>
+        <script src="HtmlOS/Boot/loading_screen.js"></script>
         <!-- Console notifications -->
         <script src="HtmlOS/SystemJS/console.js"></script>
-        <!-- UI library -->
-        <script src="HtmlOS/SystemJS/UI/index.js"></script>
 
         <!-- Global styles -->
         <style>
@@ -64,11 +65,6 @@
                 height: 100%;
                 width: 100%;
             }
-
-            /*noinspection CssUnusedSymbol*/
-            .hidden {
-                visibility: hidden;
-            }
         </style>
 
         <!-- Animation cache -->
@@ -76,8 +72,8 @@
 
         <!-- Entry point -->
         <script>
-            // Boot when content is loaded
-            document.addEventListener("DOMContentLoaded", boot);
+            // noinspection JSUnresolvedReference
+            document.addEventListener("DOMContentLoaded", system.boot);
         </script>
     </head>
 
