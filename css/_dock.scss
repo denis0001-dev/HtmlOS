@@ -1,16 +1,104 @@
+$dock-indicator-size: 4px;
+$dock-item-size: 44px;
+$dock-item-gap: 15px;
+
 .macos-dock {
     position: absolute;
     left: 50%;
-    bottom: 24px;
+    bottom: 10px;
     transform: translateX(-50%);
     border-radius: 18px;
-    min-width: 300px;
-    min-height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 24px;
+    height: 70px;
+    
     z-index: 20;
     backdrop-filter: blur(10px);
     border: 1px solid #70707040;
-} 
+
+    .wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        gap: $dock-item-gap;
+        padding: 0 16px;
+        height: 100%;
+
+        .macos-dock-icon-container {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .macos-dock-icon {
+                width: $dock-item-size;
+                height: $dock-item-size;
+                border-radius: 12px;
+                transition: transform 0.15s, box-shadow 0.2s;
+                box-shadow: 0 2px 8px #0002;
+                object-fit: contain;
+                background: #2222;
+                display: block;
+            }
+
+            .macos-dock-tooltip {
+                position: absolute;
+                bottom: 60px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(30,30,30,0.95);
+                color: #fff;
+                padding: 4px 12px;
+                border-radius: 6px;
+                font-size: 13px;
+                white-space: nowrap;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.15s;
+                z-index: 10;
+            }
+
+            .macos-dock-indicator {
+                position: absolute;
+                left: 50%;
+                bottom: -10px;
+                transform: translateX(-50%);
+                display: block;
+                margin: 0;
+                width: $dock-indicator-size;
+                height: $dock-indicator-size;
+                border-radius: calc($dock-indicator-size / 2);
+                background: #b0b0b0;
+                box-shadow: 0 0 2px #0004;
+                visibility: visible;
+            }
+        }
+        
+        
+        .macos-dock-icon-active {
+            .macos-dock-icon {
+                box-shadow: 0 2px 12px #0002;
+            }
+        
+            .macos-dock-indicator {
+                visibility: visible;
+            }
+        }
+        
+        
+        .macos-dock-icon-container:hover .macos-dock-tooltip {
+            opacity: 1;
+        }
+        
+        .macos-dock-separator {
+            width: 1px;
+            height: 70%;
+            background: rgba(180, 180, 180, 0.35);
+            border-radius: 5px;
+            margin: 10px 0px;
+            align-self: center;
+            box-sizing: border-box;
+        }
+    }
+}
+

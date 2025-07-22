@@ -1,8 +1,67 @@
 import React, { useRef, useState } from "react";
 import LiquidGlass from "liquid-glass-react";
 
-function Dock() {
-    return <div className="macos-dock">Dock (macOS style)</div>;
+// Reusable Dock component
+interface DockApp {
+    id: string;
+    name: string;
+    icon: string; // path to icon
+}
+
+// DockItem component
+function DockItem({ app, active, onClick }: {
+    app: DockApp;
+    active: boolean;
+    onClick: () => void;
+}) {
+    return (
+        <div
+            className={"macos-dock-icon-container" + (active ? " macos-dock-icon-active" : "")}
+            onClick={onClick}
+        >
+            <img
+                src={app.icon}
+                alt={app.name}
+                className="macos-dock-icon"
+            />
+            <span className="macos-dock-tooltip">{app.name}</span>
+            {active && <span className="macos-dock-indicator" />}
+        </div>
+    );
+}
+
+// DockSeparator component
+function DockSeparator() {
+    return <div className="macos-dock-separator" />;
+}
+
+// Update DockApp type to allow separators
+type DockItemType = { type: 'app'; id: string; name: string; icon: string } | { type: 'separator'; id: string };
+
+function Dock({ apps, activeAppId, onAppClick }: {
+    apps: DockItemType[];
+    activeAppId: string;
+    onAppClick: (id: string) => void;
+}) {
+    return (
+        <div className="macos-dock">
+            <div className="wrapper">
+                {apps.map(item => {
+                    if (item.type === 'separator') {
+                        return <DockSeparator key={item.id} />;
+                    }
+                    return (
+                        <DockItem
+                            key={item.id}
+                            app={item}
+                            active={activeAppId === item.id}
+                            onClick={() => onAppClick(item.id)}
+                        />
+                    );
+                })}
+            </div>
+        </div>
+    );
 }
 
 function Menubar() {
@@ -86,7 +145,13 @@ function Window({ title, children }: { title: string; children: React.ReactNode 
     );
 }
 
+// Update App to use the new DockItemType and add a separator
 export default function App() {
+    const [activeApp, setActiveApp] = React.useState('finder');
+    const apps: DockItemType[] = [
+        { type: 'app', id: 'finder', name: 'Finder', icon: '/res/finder.png' },
+        { type: 'app', id: 'settings', name: 'Settings', icon: '/res/settings.png' }
+    ];
     return (
         <div className="macos-desktop">
             <Menubar />
@@ -95,7 +160,7 @@ export default function App() {
                     Window Area (drag me!)
                 </Window>
             </div>
-            <Dock />
+            <Dock apps={apps} activeAppId={activeApp} onAppClick={setActiveApp} />
         </div>
     );
 }
