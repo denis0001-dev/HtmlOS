@@ -3,3 +3,4 @@ package-lock.json
 dist
 *.js
 .DS_Store
+.vite
