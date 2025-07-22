@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    // "outDir": "./HtmlOS",
     "allowJs": true,
     "target": "es2023",
     "jsx": "react-jsx",
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
+    "noEmit": true
   },
   "include": [
     "src",
