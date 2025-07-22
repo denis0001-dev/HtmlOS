@@ -1,5 +1,7 @@
 import React, { useRef, useState } from "react";
 import LiquidGlass from "liquid-glass-react";
+import finderIcon from "/res/finder.png";
+import settingsIcon from "/res/settings.png";
 
 // Reusable Dock component
 interface DockApp {
@@ -149,8 +151,8 @@ function Window({ title, children }: { title: string; children: React.ReactNode 
 export default function App() {
     const [activeApp, setActiveApp] = React.useState('finder');
     const apps: DockItemType[] = [
-        { type: 'app', id: 'finder', name: 'Finder', icon: '/res/finder.png' },
-        { type: 'app', id: 'settings', name: 'Settings', icon: '/res/settings.png' }
+        { type: 'app', id: 'finder', name: 'Finder', icon: finderIcon },
+        { type: 'app', id: 'settings', name: 'Settings', icon: settingsIcon }
     ];
     return (
         <div className="macos-desktop">
