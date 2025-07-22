@@ -17,119 +17,12 @@
         <!-- Title & icon -->
         <title>Html OS</title>
         <link rel="icon" type="image/png" href="./HtmlOS/Boot/splash.png" />
+        <link rel="stylesheet" href="./css/styles.scss" />
 
-        <!-- Styles & scripts -->
-        <link rel="stylesheet" href="./HtmlOS/Boot/loading_screen.css" />
-        <link rel="stylesheet" href="./HtmlOS/SystemJS/desktop/main.css" />
-        <link rel="stylesheet" href="./HtmlOS/Fonts/Segoe%20UI/stylesheet.css" />
-        <link rel="stylesheet" href="./HtmlOS/SystemJS/desktop/windows/main.css" />
-        <link rel="stylesheet" href="./HtmlOS/SystemJS/desktop/notifications/main.css" />
-        <link rel="stylesheet" href="./HtmlOS/Cursors/cursors.css" />
-        <link rel="stylesheet" href="./HtmlOS/Resources/Icons/main.css" />
-        <link rel="stylesheet" href="./HtmlOS/SystemJS/UI/context-menu.css" />
-
-        <!-- Library -->
-        <script src="./HtmlOS/Library/style_cache.js"></script>
-        <script src="./HtmlOS/Library/utils.js"></script>
-        <script src="./HtmlOS/Library/anti-rightclick.js"></script>
-        <!-- UI library -->
-        <script src="./HtmlOS/SystemJS/UI/index.js"></script>
-        <!-- Desktop -->
-        <script src="./HtmlOS/SystemJS/desktop/index.js"></script>
-        <script src="./HtmlOS/SystemJS/desktop/windows/index.js"></script>
-        <script src="./HtmlOS/SystemJS/desktop/notifications/index.js"></script>
-        <!-- Apps -->
-        <script src="./HtmlOS/SystemJS/apps.js"></script>
-        <script src="./HtmlOS/SystemJS/shutdown/index.js"></script>
-        <!-- Boot -->
-        <script src="./HtmlOS/Boot/index.js"></script>
-        <script src="./HtmlOS/Boot/loading_screen.js"></script>
-        <!-- Console notifications -->
-        <script src="./HtmlOS/SystemJS/console.js"></script>
-
-        <!-- Global styles -->
-        <style>
-            html, body {
-                background-color: black;
-                color: white;
-                position: relative;
-                height: 100vh;
-                margin: 0;
-                padding: 0;
-                overflow: hidden;
-                user-select: none;
-            }
-
-            html > body > div {
-                position: absolute;
-                height: 100%;
-                width: 100%;
-            }
-        </style>
-
-        <!-- Animation cache -->
-        <style id="animation_cache"></style>
-
-        <!-- Entry point -->
-        <script>
-            // noinspection JSUnresolvedReference
-            document.addEventListener("DOMContentLoaded", system.boot);
-        </script>
+        <script type="module" src="./src/boot.tsx"></script>
     </head>
 
     <body>
-        <div id="loading_screen">
-            <div class="wrapper">
-                <img id="splash" src="./HtmlOS/Boot/splash.png" alt="" />
-                <!-- <span id="spinner">&#xE05E</span> -->
-                <uwp-spinner id="spinner"></uwp-spinner>
-            </div>
-        </div>
-
-        <div id="main">
-            <div id="taskbar">
-                <div class="left">
-                    <div id="start"></div>
-                    <div id="search"></div> <!-- Not implemented yet -->
-                    <div id="tasks"></div>
-                    <div id="applications"></div>
-                </div>
-
-                <!-- Not implemented yet -->
-                <div class="right">
-                    <div id="tray"></div>
-                    <div id="time"></div>
-                    <div id="notifications"></div>
-                </div>
-            </div>
-
-            <div id="start_menu">
-                <div class="resizer_up"></div>
-                <div class="resizer_up_right"></div>
-                <div class="resizer_right"></div>
-            </div>
-
-            <div id="desktop">
-                <div id="wallpaper"></div>
-                <div id="icons">
-                    <!--
-                    <div class="icon" data-type="trash_full">
-                        <div class="icon_img" data-type="trash_full"></div>
-                        <div class="icon_name">Trash</div>
-                    </div>
-                    -->
-                </div>
-            </div>
-
-            <div id="windows"></div>
-            <div id="notification"></div>
-        </div>
-
-        <div id="exitScreen">
-            <div class="wrapper">
-                <uwp-spinner size="40"></uwp-spinner>
-                <div class="text">Shutting down</div>
-            </div>
-        </div>
+        <div id="root"></div>
     </body>
 </html>

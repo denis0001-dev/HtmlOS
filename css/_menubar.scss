@@ -1,0 +1,15 @@
+.macos-menubar {
+    height: 32px;
+    backdrop-filter: blur(50px);
+    border: 1px solid #70707040;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    font-size: 15px;
+} 

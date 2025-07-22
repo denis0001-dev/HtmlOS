@@ -3,11 +3,13 @@
     // "outDir": "./HtmlOS",
     "allowJs": true,
     "target": "es2023",
+    "jsx": "react-jsx",
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
   },
   "include": [
-    "HtmlOS/**/*.ts",
-    "HtmlOS/Library/**/*.ts",
-    "HtmlOS/SystemJS/**/*.ts",
-    "HtmlOS/SystemJS/cmd/**/*.ts",
+    "src",
+    "HtmlOS",
+    "index.html"
   ]
 }
