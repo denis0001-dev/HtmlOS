@@ -3,12 +3,13 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   root: '.',
+  base: './', // <-- This makes all asset URLs relative to index.html
   plugins: [react()],
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    minify: 'esbuild', // Minify JS and CSS (default)
-    cssCodeSplit: true, // Ensure CSS is split and minified
+    minify: 'esbuild',
+    cssCodeSplit: true,
   },
   server: {
     open: true,
