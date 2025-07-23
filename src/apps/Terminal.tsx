@@ -21,7 +21,6 @@ export function Terminal() {
   const termRef = useRef<XTerm | null>(null);
 
   useEffect(() => {
-    let disposed = false;
     let term: XTerm | null = null;
 
     (async () => {
@@ -45,9 +44,11 @@ export function Terminal() {
         cursorBlink: true
       });
       term.open(xtermRef.current);
-      term.write("\x1b[32mWelcome to HtmlOS Terminal!\x1b[0m\r\n" + getPrompt());
       termRef.current = term;
 
+
+      term.write("\x1b[32mWelcome to HtmlOS Terminal!\x1b[0m\r\n" + getPrompt());
+      
       function redraw() {
         term.write('\r');
         term.write('\x1b[2K');
@@ -56,10 +57,38 @@ export function Terminal() {
         term.write(`\x1b[${promptLength + cursorPos + 1}G`);
       }
 
+      // Environment variables
+      let env: Record<string, string> = {
+        HOME: "/",
+        USER: "htmlos",
+        SHELL: "/bin/tty",
+        PWD: "/"
+      };
+
+      function resolvePath(input: string, cwd: string): string {
+        if (!input) return cwd;
+        let path = input;
+        if (!path.startsWith("/")) {
+          path = cwd.endsWith("/") ? cwd + path : cwd + "/" + path;
+        }
+        // Normalize path: handle ., .., //
+        const parts = path.split("/");
+        const stack: string[] = [];
+        for (const part of parts) {
+          if (part === "" || part === ".") continue;
+          if (part === "..") {
+            if (stack.length > 0) stack.pop();
+          } else {
+            stack.push(part);
+          }
+        }
+        return "/" + stack.join("/");
+      }
+
       // Commands object
       const commands: { [key: string]: (args: string[], term: XTerm) => Promise<void> } = {
         async help(args, term) {
-          term.write("\r\nAvailable commands: help, echo, clear, ls, cat, cd\r\n");
+          term.write("\r\nAvailable commands: help, echo, clear, ls, cat, cd, env\r\n");
         },
         async echo(args, term) {
           term.write("\r\n" + args.join(" ") + "\r\n");
@@ -68,14 +97,17 @@ export function Terminal() {
           term.write("\r\n");
           term.clear();
         },
-        async ls(args, term) {
-          let path = args[0] || cwd;
-          if (!path.startsWith("/")) {
-            path = cwd.endsWith("/") ? cwd + path : cwd + "/" + path;
+        async env(args, term) {
+          for (const [key, value] of Object.entries(env)) {
+            term.write(`\r\n${key}=${value}`);
           }
-          if (path === ".") path = cwd;
+          term.write("\r\n");
+        },
+        async ls(args, term) {
+          let path = args[0] || ".";
+          path = resolvePath(path, cwd);
           try {
-            let children: string[] = (await fsList(path)).map(child => child.replace(path === "/" ? "/" : path + "/", ""));
+            const children = await fsList(path);
             term.write("\r\n" + children.join("  ") + "\r\n");
           } catch (e: any) {
             term.write("\r\n" + e.message + "\r\n");
@@ -87,9 +119,7 @@ export function Terminal() {
             term.write("\r\nUsage: cat <file>\r\n");
             return;
           }
-          if (!path.startsWith("/")) {
-            path = cwd.endsWith("/") ? cwd + path : cwd + "/" + path;
-          }
+          path = resolvePath(path, cwd);
           try {
             const content = await fsRead(path);
             term.write("\r\n" + content.replace(/\n/g, "\r\n") + "\r\n");
@@ -100,18 +130,18 @@ export function Terminal() {
         async cd(args, term) {
           let path = args[0];
           if (!path) {
-            cwd = "/";
+            cwd = env.HOME || "/";
+            env.PWD = cwd;
             return;
           }
-          if (!path.startsWith("/")) {
-            path = cwd.endsWith("/") ? cwd + path : cwd + "/" + path;
-          }
+          path = resolvePath(path, cwd);
           // Remove trailing slash except for root
           if (path.length > 1 && path.endsWith("/")) path = path.slice(0, -1);
           try {
             const isDir = await fsIsDir(path);
             if (!isDir) throw new Error("Not a directory");
             cwd = path;
+            env.PWD = cwd;
           } catch (e: any) {
             term.write("\r\n" + e.message + "\r\n");
           }
