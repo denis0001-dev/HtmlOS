@@ -6,7 +6,7 @@ export interface DockApp {
     icon: string;
 }
 
-type DockItemType = { type: 'app'; id: string; name: string; icon: string } | { type: 'separator'; id: string };
+export type DockItem = { type: 'app'; id: string; name: string; icon: string } | { type: 'separator'; id: string };
 
 function DockItem({ app, active, onClick }: {
     app: DockApp;
@@ -34,7 +34,7 @@ function DockSeparator() {
 }
 
 export function Dock({ apps, activeAppId, onAppClick }: {
-    apps: DockItemType[];
+    apps: DockItem[];
     activeAppId: string;
     onAppClick: (id: string) => void;
 }) {

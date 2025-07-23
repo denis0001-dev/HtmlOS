@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useState } from "react";
+import { Terminal } from "../apps/Terminal";
 
 export interface WindowEntry {
     id: string;
     title: string;
     content: React.ReactNode;
+    onBeforeClose?: () => boolean;
 }
 
 interface WindowContextType {
@@ -17,11 +19,20 @@ const WindowContext = createContext<WindowContextType | undefined>(undefined);
 let windowIdCounter = 0;
 
 export function WindowProvider({ children }: { children: React.ReactNode }) {
-    const [windows, setWindows] = useState<WindowEntry[]>([{
-        id: 'welcome',
-        title: 'Welcome',
-        content: <>Window Area (drag me!)</>,
-    }]);
+    const [windows, setWindows] = useState<WindowEntry[]>(
+        [
+            {
+                id: 'welcome',
+                title: 'Welcome',
+                content: <>Window Area (drag me!)</>,
+            },
+            {
+                id: "terminal",
+                title: "Terminal",
+                content: <Terminal />
+            }
+        ]
+    );
 
     const openWindow = (entry: Omit<WindowEntry, 'id'>) => {
         setWindows(wins => [...wins, { ...entry, id: `window_${windowIdCounter++}` }]);
@@ -60,7 +71,14 @@ export function WindowButtons(
 }
 
 // Draggable, closable, animated Window component
-function Window({ title, children, onClose }: { title: string; children: React.ReactNode; onClose?: () => void }) {
+function Window(
+    { title, children, onClose, onBeforeClose }: { 
+        title: string; 
+        children: React.ReactNode; 
+        onClose?: () => void; 
+        onBeforeClose?: () => boolean 
+    }
+) {
     const windowRef = React.useRef<HTMLDivElement>(null);
     const [dragging, setDragging] = React.useState(false);
     const [offset, setOffset] = React.useState({ x: 0, y: 0 });
@@ -118,6 +136,7 @@ function Window({ title, children, onClose }: { title: string; children: React.R
 
     // Handle close animation
     const handleClose = () => {
+        if (onBeforeClose && !onBeforeClose()) return;
         setClosing(true);
         setTimeout(() => {
             if (onClose) onClose();
@@ -142,11 +161,10 @@ function Window({ title, children, onClose }: { title: string; children: React.R
                 <WindowButtons onClose={handleClose} />
                 <span>{title}</span>
             </div>
-            <div
-                style={{ 
-                    padding: 24,
-                    flex: 1,
-                }}
+            <div style={{ 
+                flex: 1,
+                position: "relative"
+            }}
             >
                 {children}
             </div>
@@ -160,7 +178,12 @@ export function WindowsArea() {
     return (
         <>
             {windows.map((win) => (
-                <Window key={win.id} title={win.title} onClose={() => closeWindow(win.id)}>
+                <Window
+                    key={win.id}
+                    title={win.title}
+                    onClose={() => closeWindow(win.id)}
+                    onBeforeClose={win.onBeforeClose}
+                >
                     {win.content}
                 </Window>
             ))}
