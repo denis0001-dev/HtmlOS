@@ -2,6 +2,33 @@ import React, { useEffect, useRef } from "react";
 import { Terminal as XTerm } from "xterm";
 import "xterm/css/xterm.css";
 
+// Helper to parse command line with quoted arguments
+function parseArgs(line: string): string[] {
+  const regex = /"([^"]*)"|'([^']*)'|([^\s]+)/g;
+  const args: string[] = [];
+  let match;
+  while ((match = regex.exec(line)) !== null) {
+    if (match[1] !== undefined) args.push(match[1]);
+    else if (match[2] !== undefined) args.push(match[2]);
+    else if (match[3] !== undefined) args.push(match[3]);
+  }
+  return args;
+}
+
+// Commands object
+const commands: { [key: string]: (args: string[], term: XTerm) => Promise<void> } = {
+  async help(args, term) {
+    term.write("\r\nAvailable commands: help, echo, clear\r\n");
+  },
+  async echo(args, term) {
+    term.write("\r\n" + args.join(" ") + "\r\n");
+  },
+  async clear(args, term) {
+    term.write("\r\n");
+    term.clear();
+  }
+};
+
 export function Terminal() {
   const xtermRef = useRef<HTMLDivElement>(null);
   const termRef = useRef<XTerm | null>(null);
@@ -39,21 +66,14 @@ export function Terminal() {
       term.write(`\x1b[${promptLength + cursorPos + 1}G`);
     }
 
-    term.onData(data => {
+    term.onData(async data => {
       if (data === "\r") {
         // Enter pressed
-        if (inputBuffer.trim() === "clear") {
-          term.write("\r\n");
-          term.clear();
-          term.write(PROMPT);
-          inputBuffer = "";
-          cursorPos = 0;
-          return;
-        } else if (inputBuffer.trim() === "help") {
-          term.write("\r\nAvailable commands: help, echo, clear\r\n");
-        } else if (inputBuffer.startsWith("echo ")) {
-          term.write("\r\n" + inputBuffer.slice(5) + "\r\n");
-        } else if (inputBuffer.trim() === "") {
+        const args = parseArgs(inputBuffer);
+        const cmd = args[0];
+        if (cmd && commands[cmd]) {
+          await commands[cmd](args.slice(1), term);
+        } else if (cmd === "") {
           term.write("\r\n");
         } else {
           term.write("\r\nCommand not found: " + inputBuffer + "\r\n");
