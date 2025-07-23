@@ -1,4 +1,4 @@
-body, html, .macos-desktop {
+body, html, .desktop {
     height: 100%;
     margin: 0;
     padding: 0;
@@ -6,7 +6,7 @@ body, html, .macos-desktop {
     overflow: hidden;
 }
 
-.macos-desktop {
+.desktop {
     background: url('/res/wallpaper.png') center center / cover no-repeat;
     width: 100vw;
     height: 100vh;

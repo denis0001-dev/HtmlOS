@@ -1,4 +1,4 @@
-.macos-windows-area {
+.windows {
     position: absolute;
     top: 32px;
     left: 0;
@@ -9,27 +9,31 @@
     overflow: hidden;
 }
 
-.macos-window {
+.window {
     position: absolute;
     min-width: 400px;
     min-height: 200px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.18);
     border-radius: 10px;
-    background: #fff;
+    background: #2f2f2f;
     z-index: 100;
     display: flex;
     flex-direction: column;
+    color: white;
 }
 
-.macos-window-titlebar {
+.titlebar {
     display: flex;
     align-items: center;
-    padding: 8px 16px;
+    padding: 6px 12px;
     width: 100%;
     box-sizing: border-box;
     cursor: grab;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    background: rgba(245,245,245,0.95);
-    border-bottom: 1px solid #e0e0e0;
-} 
+    background: #2f2f2f;
+    border-bottom: 1px solid #515151;
+    color: rgb(222, 222, 222);
+    font-weight: 600;
+    font-size: 14px;
+}

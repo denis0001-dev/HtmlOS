@@ -18,23 +18,23 @@ function DockItem({ app, active, onClick }: {
 }) {
     return (
         <div
-            className={"macos-dock-icon-container" + (active ? " macos-dock-icon-active" : "")}
+            className={"icon-container" + (active ? " icon-active" : "")}
             onClick={onClick}
         >
             <img
                 src={app.icon}
                 alt={app.name}
-                className="macos-dock-icon"
+                className="icon"
             />
-            <span className="macos-dock-tooltip">{app.name}</span>
-            {active && <span className="macos-dock-indicator" />}
+            <span className="tooltip">{app.name}</span>
+            {active && <span className="indicator" />}
         </div>
     );
 }
 
 // DockSeparator component
 function DockSeparator() {
-    return <div className="macos-dock-separator" />;
+    return <div className="separator" />;
 }
 
 // Update DockApp type to allow separators
@@ -46,7 +46,7 @@ function Dock({ apps, activeAppId, onAppClick }: {
     onAppClick: (id: string) => void;
 }) {
     return (
-        <div className="macos-dock">
+        <div className="dock">
             <div className="wrapper">
                 {apps.map(item => {
                     if (item.type === 'separator') {
@@ -67,7 +67,7 @@ function Dock({ apps, activeAppId, onAppClick }: {
 }
 
 function Menubar() {
-    return <div className="macos-menubar">Menu Bar (macOS style)</div>;
+    return <div className="menubar">Menu Bar (macOS style)</div>;
 }
 
 function Window({ title, children }: { title: string; children: React.ReactNode }) {
@@ -116,7 +116,7 @@ function Window({ title, children }: { title: string; children: React.ReactNode 
     return (
         <div
             ref={windowRef}
-            className="macos-window"
+            className="window"
             style={{
                 left: position ? position.x : 0,
                 top: position ? position.y : 0,
@@ -125,7 +125,7 @@ function Window({ title, children }: { title: string; children: React.ReactNode 
             }}
         >
             <div
-                className="macos-window-titlebar"
+                className="titlebar"
                 onMouseDown={onMouseDown}
             >
                 <div style={{ display: "flex", gap: 6, marginRight: 12 }}>
@@ -133,7 +133,7 @@ function Window({ title, children }: { title: string; children: React.ReactNode 
                     <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#ffbd2e", display: "inline-block", border: "1px solid #e09e3e" }} />
                     <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#27c93f", display: "inline-block", border: "1px solid #13a10e" }} />
                 </div>
-                <span style={{ fontWeight: 500, fontSize: 15, color: "#222" }}>{title}</span>
+                <span>{title}</span>
             </div>
             <div 
                 style={{ 
@@ -155,9 +155,9 @@ export default function App() {
         { type: 'app', id: 'settings', name: 'Settings', icon: settingsIcon }
     ];
     return (
-        <div className="macos-desktop">
+        <div className="desktop">
             <Menubar />
-            <div className="macos-windows-area">
+            <div className="windows">
                 <Window title="Welcome">
                     Window Area (drag me!)
                 </Window>

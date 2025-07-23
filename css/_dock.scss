@@ -2,7 +2,7 @@ $dock-indicator-size: 4px;
 $dock-item-size: 44px;
 $dock-item-gap: 15px;
 
-.macos-dock {
+.dock {
     position: absolute;
     left: 50%;
     bottom: 10px;
@@ -23,14 +23,14 @@ $dock-item-gap: 15px;
         padding: 0 16px;
         height: 100%;
 
-        .macos-dock-icon-container {
+        .icon-container {
             position: relative;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
 
-            .macos-dock-icon {
+            .icon {
                 width: $dock-item-size;
                 height: $dock-item-size;
                 border-radius: 12px;
@@ -41,7 +41,7 @@ $dock-item-gap: 15px;
                 display: block;
             }
 
-            .macos-dock-tooltip {
+            .tooltip {
                 position: absolute;
                 bottom: 60px;
                 left: 50%;
@@ -58,7 +58,7 @@ $dock-item-gap: 15px;
                 z-index: 10;
             }
 
-            .macos-dock-indicator {
+            .indicator {
                 position: absolute;
                 left: 50%;
                 bottom: -10px;
@@ -75,22 +75,22 @@ $dock-item-gap: 15px;
         }
         
         
-        .macos-dock-icon-active {
-            .macos-dock-icon {
+        .icon-active {
+            .icon {
                 box-shadow: 0 2px 12px #0002;
             }
         
-            .macos-dock-indicator {
+            .indicator {
                 visibility: visible;
             }
         }
         
         
-        .macos-dock-icon-container:hover .macos-dock-tooltip {
+        .icon-container:hover .tooltip {
             opacity: 1;
         }
         
-        .macos-dock-separator {
+        .separator {
             width: 1px;
             height: 70%;
             background: rgba(180, 180, 180, 0.35);
