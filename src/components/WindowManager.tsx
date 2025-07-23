@@ -29,7 +29,7 @@ export function WindowProvider({ children }: { children: React.ReactNode }) {
             {
                 id: "terminal",
                 title: "Terminal",
-                content: <Terminal />
+                content: <Terminal />,
             }
         ]
     );
@@ -50,6 +50,14 @@ export function WindowProvider({ children }: { children: React.ReactNode }) {
 export function useWindows() {
     const ctx = useContext(WindowContext);
     if (!ctx) throw new Error('useWindows must be used within a WindowProvider');
+    return ctx;
+}
+
+// --- WindowCloseContext ---
+export const WindowCloseContext = createContext<(() => void) | undefined>(undefined);
+export function useWindowClose() {
+    const ctx = useContext(WindowCloseContext);
+    if (!ctx) throw new Error('useWindowClose must be used within a WindowCloseContext.Provider');
     return ctx;
 }
 
@@ -161,13 +169,11 @@ function Window(
                 <WindowButtons onClose={handleClose} />
                 <span>{title}</span>
             </div>
-            <div style={{ 
-                flex: 1,
-                position: "relative"
-            }}
-            >
-                {children}
-            </div>
+            <WindowCloseContext.Provider value={handleClose}>
+                <div style={{ flex: 1 }}>
+                    {children}
+                </div>
+            </WindowCloseContext.Provider>
         </div>
     );
 }
