@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, createContext, useContext } from "react";
 import LiquidGlass from "liquid-glass-react";
 import finderIcon from "/res/finder.png";
 import settingsIcon from "/res/settings.png";
@@ -66,15 +66,59 @@ function Dock({ apps, activeAppId, onAppClick }: {
     );
 }
 
-function Menubar() {
-    return <div className="menubar">Menu Bar (macOS style)</div>;
+function Menubar({ menubarRef }: { menubarRef: React.RefObject<HTMLDivElement> }) {
+    return <div className="menubar" ref={menubarRef}>Menu Bar (macOS style)</div>;
 }
 
-function Window({ title, children }: { title: string; children: React.ReactNode }) {
+// Window context and provider
+interface WindowEntry {
+    id: string;
+    title: string;
+    content: React.ReactNode;
+}
+
+interface WindowContextType {
+    windows: WindowEntry[];
+    openWindow: (entry: Omit<WindowEntry, 'id'>) => void;
+    closeWindow: (id: string) => void;
+}
+
+const WindowContext = createContext<WindowContextType | undefined>(undefined);
+
+let windowIdCounter = 0;
+
+function WindowProvider({ children }: { children: React.ReactNode }) {
+    const [windows, setWindows] = useState<WindowEntry[]>([{
+        id: 'welcome',
+        title: 'Welcome',
+        content: <>Window Area (drag me!)</>,
+    }]);
+
+    const openWindow = (entry: Omit<WindowEntry, 'id'>) => {
+        setWindows(wins => [...wins, { ...entry, id: `window_${windowIdCounter++}` }]);
+    };
+    const closeWindow = (id: string) => {
+        setWindows(wins => wins.filter(w => w.id !== id));
+    };
+    return (
+        <WindowContext.Provider value={{ windows, openWindow, closeWindow }}>
+            {children}
+        </WindowContext.Provider>
+    );
+}
+
+function useWindows() {
+    const ctx = useContext(WindowContext);
+    if (!ctx) throw new Error('useWindows must be used within a WindowProvider');
+    return ctx;
+}
+
+function Window({ title, children, onClose }: { title: string; children: React.ReactNode; onClose?: () => void }) {
     const windowRef = useRef<HTMLDivElement>(null);
     const [dragging, setDragging] = useState(false);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
+    const [closing, setClosing] = useState(false);
 
     React.useEffect(() => {
         // Center the window on mount (always use pixel position)
@@ -98,8 +142,20 @@ function Window({ title, children }: { title: string; children: React.ReactNode 
 
     React.useEffect(() => {
         const onMouseMove = (e: MouseEvent) => {
-            if (dragging) {
-                setPosition({ x: e.clientX - offset.x, y: e.clientY - offset.y });
+            if (dragging && windowRef.current) {
+                const win = windowRef.current;
+                const rect = win.getBoundingClientRect();
+                const { innerWidth, innerHeight } = window;
+
+                // Only update if cursor is inside the browser window
+                if (e.clientX >= 0 && e.clientX <= innerWidth) {
+                    let newX = e.clientX - offset.x;
+                    let newY = e.clientY - offset.y;
+
+                    newY = Math.max(0, Math.min(newY, innerHeight - rect.height));
+
+                    setPosition({ x: newX, y: newY });
+                }
             }
         };
         const onMouseUp = () => setDragging(false);
@@ -113,10 +169,18 @@ function Window({ title, children }: { title: string; children: React.ReactNode 
         };
     }, [dragging, offset]);
 
+    // Handle close animation
+    const handleClose = () => {
+        setClosing(true);
+        setTimeout(() => {
+            if (onClose) onClose();
+        }, 300); // match CSS transition duration
+    };
+
     return (
         <div
             ref={windowRef}
-            className="window"
+            className={`window${closing ? ' window-closing' : ''}`}
             style={{
                 left: position ? position.x : 0,
                 top: position ? position.y : 0,
@@ -129,7 +193,10 @@ function Window({ title, children }: { title: string; children: React.ReactNode 
                 onMouseDown={onMouseDown}
             >
                 <div style={{ display: "flex", gap: 6, marginRight: 12 }}>
-                    <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#ff5f56", display: "inline-block", border: "1px solid #e33e41" }} />
+                    <span
+                        style={{ width: 12, height: 12, borderRadius: "50%", background: "#ff5f56", display: "inline-block", border: "1px solid #e33e41", cursor: 'pointer' }}
+                        onClick={handleClose}
+                    />
                     <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#ffbd2e", display: "inline-block", border: "1px solid #e09e3e" }} />
                     <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#27c93f", display: "inline-block", border: "1px solid #13a10e" }} />
                 </div>
@@ -154,15 +221,30 @@ export default function App() {
         { type: 'app', id: 'finder', name: 'Finder', icon: finderIcon },
         { type: 'app', id: 'settings', name: 'Settings', icon: settingsIcon }
     ];
+    const menubarRef = React.useRef<HTMLDivElement>(null);
     return (
-        <div className="desktop">
-            <Menubar />
-            <div className="windows">
-                <Window title="Welcome">
-                    Window Area (drag me!)
-                </Window>
+        <WindowProvider>
+            <div className="desktop">
+                <Menubar menubarRef={menubarRef} />
+                <div className="windows">
+                    <WindowsArea />
+                </div>
+                <Dock apps={apps} activeAppId={activeApp} onAppClick={setActiveApp} />
             </div>
-            <Dock apps={apps} activeAppId={activeApp} onAppClick={setActiveApp} />
-        </div>
+        </WindowProvider>
+    );
+}
+
+// Component to render all windows
+function WindowsArea() {
+    const { windows, closeWindow } = useWindows();
+    return (
+        <>
+            {windows.map(win => (
+                <Window key={win.id} title={win.title} onClose={() => closeWindow(win.id)}>
+                    {win.content}
+                </Window>
+            ))}
+        </>
     );
 }
