@@ -1,24 +1,24 @@
 {
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "clean": "rm -rf dist"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^4.7.0",
-    "sass-embedded": "^1.89.2",
-    "typescript": "^5.5.3",
-    "vite": "^7.0.5",
-    "vite-plugin-html": "^3.2.2"
-  },
-  "dependencies": {
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
-    "@xterm/xterm": "^5.5.0",
-    "idb": "^8.0.3",
-    "liquid-glass-react": "^1.1.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "xterm": "^5.3.0"
-  }
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "clean": "rm -rf dist"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-react": "^4.7.0",
+        "sass-embedded": "^1.89.2",
+        "typescript": "^5.5.3",
+        "vite": "^7.0.5",
+        "vite-plugin-html": "^3.2.2"
+    },
+    "dependencies": {
+        "@types/react": "^19.1.8",
+        "@types/react-dom": "^19.1.6",
+        "@xterm/xterm": "^5.5.0",
+        "idb": "^8.0.3",
+        "liquid-glass-react": "^1.1.1",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
+        "xterm": "^5.3.0"
+    }
 }

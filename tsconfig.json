@@ -1,15 +1,15 @@
 {
-  "compilerOptions": {
-    "allowJs": true,
-    "target": "es2023",
-    "jsx": "react-jsx",
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node",
-    "noEmit": true
-  },
-  "include": [
-    "src",
-    "HtmlOS",
-    "index.html"
-  ]
+    "compilerOptions": {
+        "allowJs": true,
+        "target": "es2023",
+        "jsx": "react-jsx",
+        "allowSyntheticDefaultImports": true,
+        "moduleResolution": "node",
+        "noEmit": true
+    },
+    "include": [
+        "src",
+        "HtmlOS",
+        "index.html"
+    ]
 }

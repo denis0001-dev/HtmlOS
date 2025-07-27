@@ -1,5 +1,3 @@
-import React from "react";
-
 export interface DockApp {
     id: string;
     name: string;

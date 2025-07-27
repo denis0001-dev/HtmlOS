@@ -1,8 +1,7 @@
-import React, { useRef, useState, createContext, useContext } from "react";
-import LiquidGlass from "liquid-glass-react";
+import React from "react";
 import { Dock, DockItem } from './components/Dock';
 import { Menubar } from './components/Menubar';
-import { WindowProvider, useWindows, WindowsArea } from './components/WindowManager';
+import { WindowProvider, WindowsArea } from './components/WindowManager';
 import finderIcon from "/res/finder.png";
 import settingsIcon from "/res/settings.png";
 import vscodeIcon from "/res/vscode.webp";
